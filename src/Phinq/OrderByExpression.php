@@ -28,7 +28,7 @@
 			});
 
 			if ($this->descending) {
-				array_reverse($collection, true);
+				$collection = array_reverse($collection, true);
 			}
 
 			return $collection;

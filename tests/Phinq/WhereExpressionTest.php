@@ -39,7 +39,7 @@
 				->orderBy(function($value) { return $value; }, true)
 				->toArray();
 
-			self::assertSame(array(1 => 1, 2 => 3, 0 => 5), $orderedCollection);
+			self::assertSame(array(0 => 5, 2 => 3, 1 => 1), $orderedCollection);
 		}
 
 	}
