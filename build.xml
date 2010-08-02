@@ -1,0 +1,155 @@
+<project name="Phinq" basedir="." default="help">
+	
+	<property file="./properties/build.properties" prefix="build"/>
+	<property file="./properties/product.properties" prefix="product"/>
+	<property file="./properties/dir.properties" prefix="dir"/>
+	<property environment="env"/>
+
+	<target name="all" depends="lint, coverage, archive" description="Runs lint, coverage, docs and archive"/>
+	
+	<target name="archive" depends="set-product-revision" description="Creates gzipped archives for deployment">
+		<delete dir="${build.dist}"/>
+		<mkdir dir="${build.dist}"/>
+		
+		<!-- just library -->
+		<tar destfile="${build.dist}/${product.shortname}-${product.version}.${product.revision}.tar.gz"  compression="gzip"> 
+			<tarfileset dir="${dir.src}" includes="Phinq/**"/>
+		</tar>
+	</target>
+	
+	<target name="clean" depends="init" description="Deletes directories and files created by the build sequence">
+		<delete dir="${build.base}"/> 
+		<delete dir="${build.dist}"/>
+	</target>
+	
+	<target name="coverage" depends="set-exe-suffix, test-set-suite" description="Runs unit tests and calculates code coverage">
+		<delete dir="${build.coverage}"/>
+		<mkdir dir="${build.coverage}"/>
+		
+		<echo level="info">Running test suite: ${test.suite}</echo>
+		<echo level="debug">Component: ${component}</echo>
+		<exec executable="phpunit${exe.suffix}" failonerror="true">
+			<env key="TEST_COMPONENT" value="${component}"/>
+			<arg line="--log-junit ${build.artifacts}/phpunit-log.xml"/>
+			<arg line="--coverage-clover ${build.artifacts}/phpunit-coverage.xml"/>
+			<arg line="--coverage-html ${build.coverage}"/>
+			<arg line="--bootstrap ${dir.tests}/bootstrap.php"/>
+			<arg line="${test.suite}"/>
+		</exec>
+	</target>
+	
+	<target name="dependencies" depends="set-exe-suffix" description="Generates dependency graphs and reports">
+		<mkdir dir="${build.artifacts}"/>
+		<exec executable="pdepend${exe.suffix}" failonerror="true">
+			<arg line="--summary-xml=${build.artifacts}/pdepend.xml"/>
+			<arg line="--jdepend-chart=${build.artifacts}/pdepend.svg"/>
+			<arg line="--overview-pyramid=${build.artifacts}/pyramind.svg"/>
+			<arg line="${dir.src}"/>
+		</exec>
+	</target>
+	
+	<target name="help" depends="set-exe-suffix" description="Displays information about available targets">
+		<exec executable="ant${exe.suffix}" failonerror="true">
+			<arg value="-p"/>
+		</exec>
+	</target>
+	
+	<target name="lint" depends="init, set-component" description="Scans for parse errors">
+		<apply executable="php">
+			<arg line="-l"/>
+			<fileset dir="${dir.src}/${component}">
+				<include name="**/*.php"/>
+			</fileset>
+		</apply>
+	</target>
+	
+	<target name="phar" depends="init" description="Generates a phar archive">
+		<mkdir dir="${build.dist}"/>
+		<delete file="${build.dist}/phinq.phar"/>
+		
+		<exec executable="php" failonerror="true">
+			<arg value="${dir.tools}/pharbuilder.php"/>
+			<arg line="--dir"/>
+			<arg value="${dir.src}"/>
+			<arg line="--recursive"/>
+			<arg line="--stub"/>
+			<arg value="${dir.src}/Phinq/bootstrap.php"/>
+			<arg value="${build.dist}/docparser.phar"/>
+		</exec>
+	</target>
+	
+	<target name="test" depends="set-exe-suffix, test-set-suite" description="Runs all unit tests">
+		<mkdir dir="${build.artifacts}"/>
+		
+		<echo level="info">Running test suite: ${test.suite}</echo>
+		<echo level="debug">Component: ${component}</echo>
+		<exec executable="phpunit${exe.suffix}" failonerror="true">
+			<env key="TEST_COMPONENT" value="${component}"/>
+			<arg line="--log-junit ${build.artifacts}/phpunit-log.xml"/>
+			<arg line="--bootstrap ${dir.tests}/bootstrap.php"/>
+			<arg line="${test.suite}"/>
+		</exec>
+	</target>
+	
+	<target name="meta" depends="init" description="Generates MetaInfo.php">
+		<exec executable="php" failonerror="true">
+			<arg line="${dir.tools}/metainfobuilder.php"/>
+			<arg line="--target"/>
+			<arg line="${dir.src}/Phinq/MetaInfo.php"/>
+			<arg line="--author"/>
+			<arg value="${product.author}"/>
+			<arg line="--name"/>
+			<arg value="${product.name}"/>
+			<arg line="--version"/>
+			<arg value="${product.version}"/>
+			<arg line="--website"/>
+			<arg value="${product.website}"/>
+		</exec>
+		
+		<echo level="info">Wrote to ${dir.src}/Phatality/MetaInfo.php</echo>
+	</target>
+	
+	<!-- 
+		######################################################
+		internal targets only below
+		######################################################
+	-->
+	
+	<target name="init">
+		<tstamp>
+			<format property="TIMESTAMP" pattern="yyyy-MM-dd HH:mm:ss"/>
+		</tstamp>
+		<echo level="info">Beginning build for ${product.name} ${product.version}</echo>
+		<echo level="info">  ${TIMESTAMP}</echo>
+		<echo level="info"/>
+	</target>
+	
+	<!-- this target depends on test-set-suite so that ${component} doesn't get set before test-set-suite is called -->
+	<target name="set-component" depends="test-set-suite" unless="component">
+		<property name="component" value=""/>
+	</target>
+	
+	<target name="set-exe-suffix">
+		<condition property="exe.suffix" value=".bat" else="">
+			<os family="winnt"/>
+		</condition>
+	</target>
+	
+	<target name="set-product-revision">
+		<exec executable="svnversion" outputproperty="product.revision" failonerror="true"/>
+		<echo level="info">Product revision set to ${product.revision}</echo>
+	</target>
+	
+	<target name="test-set-default-suite" unless="component">
+		<property name="test.suite" value="${dir.tests}/AllUnitTests.php"/>
+	</target>
+	
+	<target name="test-set-dynamic-suite" if="component">
+		<property name="test.suite" value="${dir.tests}/DynamicTestSuite.php"/>
+	</target>
+	
+	<target name="test-set-suite" depends="test-set-default-suite, test-set-dynamic-suite">
+		<echo level="debug">Using test suite ${test.suite}</echo>
+	</target>
+	
+</project>
