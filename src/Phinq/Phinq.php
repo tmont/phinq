@@ -544,6 +544,11 @@
 			return true;
 		}
 
+		public function join(array $collectionToJoin, Closure $innerKeySelector, Closure $outerKeySelector, Closure $resultSelector, EqualityComparer $comparer = null) {
+			$this->queryQueue[] = new JoinQuery($collectionToJoin, $innerKeySelector, $outerKeySelector, $resultSelector, $comparer);
+			return $this;
+		}
+
 	}
 
 ?>

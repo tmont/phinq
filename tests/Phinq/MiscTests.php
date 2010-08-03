@@ -67,6 +67,37 @@
 			self::assertTrue($equal);
 		}
 
+		public function testSimpleJoin() {
+			$collection = array(1, 2, 3);
+			$collectionToJoinOn = array(2, 4, 6, 2);
+
+			$joinedCollection = Phinq::create($collection)
+				->join(
+					$collectionToJoinOn,
+					function($value) { return $value; },
+					function($value) { return $value; },
+					function($innerValue, $outerValue) { return $innerValue; }
+				)->toArray();
+
+			self::assertSame(array(2, 2), $joinedCollection);
+		}
+
+		public function testJoinWithComparer() {
+			$collection = array(new Sphinqter('foo', 1), new Sphinqter('bar', 2));
+			$collectionToJoinOn = array(new Sphinqter('foo', 3), new Sphinqter('foo', 4));
+
+			$joinedCollection = Phinq::create($collection)
+				->join(
+					$collectionToJoinOn,
+					function($value) { return $value; },
+					function($value) { return $value; },
+					function($innerValue, $outerValue) { return "first: $innerValue->foo, second: $outerValue->foo"; },
+					new IdComparer()
+				)->toArray();
+
+			self::assertSame(array('first: 1, second: 3', 'first: 1, second: 4'), $joinedCollection);
+		}
+
 	}
 
 ?>
