@@ -217,6 +217,16 @@
 			self::assertTrue(Phinq::create(array())->all(function($value) { return false; }));
 		}
 
+		public function testAnyWithoutPredicate() {
+			self::assertTrue(Phinq::create(array(1, 2, 3, 4, 5, 6))->any());
+			self::assertFalse(Phinq::create(array())->any());
+		}
+
+		public function testAnyWithPredicate() {
+			self::assertTrue(Phinq::create(array(1, 2, 3, 4, 5, 6))->any(function($value) { return $value === 3; }));
+			self::assertFalse(Phinq::create(array())->any(function($value) { return $value !== null; }));
+		}
+
 	}
 	
 ?>

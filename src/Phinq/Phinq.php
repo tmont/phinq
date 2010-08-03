@@ -336,6 +336,29 @@
 			return array_reduce($this->toArray(), function($current, $next) use ($predicate) { return $current && $predicate($next); }, true);
 		}
 
+		/**
+		 * Verifies that any element in the collection satisifes the given predicate
+		 *
+		 * $predicate takes in one argument, the current element, and returns a boolean.
+		 *
+		 * @param Closure $predicate
+		 * @return bool
+		 */
+		public function any(Closure $predicate = null) {
+			$collection = $this->toArray();
+			if ($predicate === null && !empty($collection)) {
+				return true;
+			}
+			
+			foreach ($collection as $value) {
+				if ($predicate($value)) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 	}
 
 ?>
