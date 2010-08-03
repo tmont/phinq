@@ -9,7 +9,7 @@
 
 		public function __construct(array $additionalCollection, EqualityComparer $comparer = null) {
 			$this->additionalCollection = array_values($additionalCollection);
-			$this->comparer = $comparer ?: new DefaultEqualityComparer();
+			$this->comparer = $comparer ?: DefaultEqualityComparer::getInstance();
 		}
 
 		public function execute(array $collection) {

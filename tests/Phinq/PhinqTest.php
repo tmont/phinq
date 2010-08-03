@@ -116,6 +116,28 @@
 			self::assertSame(array($foo), $intersectedCollection);
 		}
 
+		public function testDistinct() {
+			$collection = array(1, 2, 3, 1, 2, 4);
+			$intersectedCollection = Phinq::create($collection)
+				->distinct()
+				->toArray();
+
+			self::assertSame(array(1, 2, 3, 4), $intersectedCollection);
+		}
+
+		public function testDistinctWithComparer() {
+			$foo = new Sphinqter('foo');
+			$bar = new Sphinqter('bar');
+			$baz = new Sphinqter('baz');
+			
+			$collection = array($foo, $bar, $baz, $foo, $foo);
+			$intersectedCollection = Phinq::create($collection)
+				->distinct(new IdComparer())
+				->toArray();
+
+			self::assertSame(array($foo, $bar, $baz), $intersectedCollection);
+		}
+
 	}
 
 	class IdComparer implements \Phinq\EqualityComparer {

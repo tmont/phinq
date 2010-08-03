@@ -9,7 +9,7 @@
 
 		public function __construct(array $collectionToIntersect, EqualityComparer $comparer = null) {
 			$this->collectionToIntersect = array_values($collectionToIntersect);
-			$this->comparer = $comparer ?: new DefaultEqualityComparer();
+			$this->comparer = $comparer ?: DefaultEqualityComparer::getInstance();
 		}
 
 		public function execute(array $collection) {

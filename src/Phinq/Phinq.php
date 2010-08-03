@@ -55,6 +55,11 @@
 			$this->queryQueue[] = new ConcatQuery($collectionToConcat);
 			return $this;
 		}
+
+		public function distinct(EqualityComparer $comparer = null) {
+			$this->queryQueue[] = new DistinctQuery($comparer);
+			return $this;
+		}
 		
 	}
 
