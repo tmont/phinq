@@ -472,6 +472,26 @@
 			return array_sum($collection);
 		}
 
+		/**
+		 * Reduces the collection to a single value
+		 *
+		 * Example:
+		 * <code>
+		 * factorial = Phinq::create(array(1, 2, 3, 4, 5))
+		 *   ->aggregate(function($current, $next) { return $current * $next; }, 1);
+		 * </code>
+		 *
+		 * @see array_reduce()
+		 *
+		 * @param Closure $accumulator Takes two values, the current value and the next value, and returns the input to the next iteration
+		 * @param mixed $seed Optional seed for the accumulator, or the default value if the collection is empty
+		 * @return mixed
+		 */
+		public function aggregate(Closure $accumulator, $seed = null) {
+			$collection = $this->toArray();
+			return array_reduce($collection, $accumulator, $seed);
+		}
+
 	}
 
 ?>
