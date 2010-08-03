@@ -91,6 +91,31 @@
 			self::assertSame(array($foo1, $bar, $baz, $foo2), $concatedCollection);
 		}
 
+		public function testIntersect() {
+			$collection1 = array(1, 2, 3);
+			$collection2 = array(2, 3, 4);
+			$intersectedCollection = Phinq::create($collection1)
+				->intersect($collection2)
+				->toArray();
+
+			self::assertSame(array(2, 3), $intersectedCollection);
+		}
+
+		public function testIntersectWithComparer() {
+			$foo = new Sphinqter('foo');
+			$bar = new Sphinqter('bar');
+			$baz = new Sphinqter('baz');
+
+			$collection1 = array($foo, $bar);
+			$collection2 = array($baz, $foo);
+			
+			$intersectedCollection = Phinq::create($collection1)
+				->intersect($collection2)
+				->toArray();
+
+			self::assertSame(array($foo), $intersectedCollection);
+		}
+
 	}
 
 	class IdComparer implements \Phinq\EqualityComparer {

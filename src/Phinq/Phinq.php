@@ -46,6 +46,11 @@
 			return $this;
 		}
 
+		public function intersect(array $collectionToIntersect, EqualityComparer $comparer = null) {
+			$this->queryQueue[] = new IntersectQuery($collectionToIntersect, $comparer);
+			return $this;
+		}
+
 		public function concat(array $collectionToConcat) {
 			$this->queryQueue[] = new ConcatQuery($collectionToConcat);
 			return $this;
