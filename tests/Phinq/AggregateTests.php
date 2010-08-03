@@ -56,6 +56,23 @@
 			self::assertSame($bar, $sphinqtersWithId2[0]);
 		}
 
+		public function testMax() {
+			$collection = array(2, 4, 3, 6, 5, 1);
+			self::assertSame(6, Phinq::create($collection)->max());
+			self::assertSame(3, Phinq::create($collection)->max(function($value) { return $value > 3 ? 0 : $value; }));
+		}
+
+		public function testMaxWithNonNumbers() {
+			$obj1 = new Sphinqter('foo');
+			$obj2 = new Sphinqter('bar');
+			$obj3 = new Sphinqter('baz');
+			
+			$collection = array($obj1, $obj2, $obj3);
+
+			self::assertSame($obj1, Phinq::create($collection)->max());
+			self::assertSame($obj1, Phinq::create($collection)->max(function($value) { return $value->id; }));
+		}
+
 	}
 	
 ?>

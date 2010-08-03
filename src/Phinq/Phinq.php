@@ -412,6 +412,19 @@
 			return $this;
 		}
 
+		/**
+		 * Gets the maximum-valued element from the collection
+		 *
+		 * This method is equivalent to calling orderBy($lambda, true) followed by firstOrDefault().
+		 *
+		 * @return mixed
+		 */
+		public function max(Closure $lambda = null) {
+			$lambda = $lambda ?: function($value) { return $value; };
+
+			return $this->orderBy($lambda, true)->firstOrDefault();
+		}
+
 	}
 
 ?>
