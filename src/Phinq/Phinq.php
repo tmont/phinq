@@ -421,8 +421,19 @@
 		 */
 		public function max(Closure $lambda = null) {
 			$lambda = $lambda ?: function($value) { return $value; };
-
 			return $this->orderBy($lambda, true)->firstOrDefault();
+		}
+
+		/**
+		 * Gets the minimum-valued element from the collection
+		 *
+		 * This method is equivalent to calling orderBy($lambda) followed by firstOrDefault().
+		 *
+		 * @return mixed
+		 */
+		public function min(Closure $lambda = null) {
+			$lambda = $lambda ?: function($value) { return $value; };
+			return $this->orderBy($lambda)->firstOrDefault();
 		}
 
 	}

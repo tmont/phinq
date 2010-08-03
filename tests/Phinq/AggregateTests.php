@@ -62,6 +62,10 @@
 			self::assertSame(3, Phinq::create($collection)->max(function($value) { return $value > 3 ? 0 : $value; }));
 		}
 
+		public function testMaxWithEmptyCollection() {
+			self::assertNull(Phinq::create(array())->max());
+		}
+
 		public function testMaxWithNonNumbers() {
 			$obj1 = new Sphinqter('foo');
 			$obj2 = new Sphinqter('bar');
@@ -71,6 +75,47 @@
 
 			self::assertSame($obj1, Phinq::create($collection)->max());
 			self::assertSame($obj1, Phinq::create($collection)->max(function($value) { return $value->id; }));
+		}
+
+		public function testMaxWithDuplicateValues() {
+			$obj1 = new Sphinqter('foo');
+			$obj2 = new Sphinqter('foo');
+			$obj3 = new Sphinqter('foo');
+
+			$collection = array($obj1, $obj2, $obj3);
+
+			self::assertSame($obj1, Phinq::create($collection)->max(function($value) { return $value->id; }));
+		}
+
+		public function testMin() {
+			$collection = array(2, 4, 3, 6, 5, 1);
+			self::assertSame(1, Phinq::create($collection)->min());
+			self::assertSame(6, Phinq::create($collection)->min(function($value) { return $value > 3 ? 0 : $value; }));
+		}
+
+		public function testMinWithEmptyCollection() {
+			self::assertNull(Phinq::create(array())->min());
+		}
+
+		public function testMinWithDuplicateValues() {
+			$obj1 = new Sphinqter('foo');
+			$obj2 = new Sphinqter('foo');
+			$obj3 = new Sphinqter('foo');
+
+			$collection = array($obj1, $obj2, $obj3);
+			
+			self::assertSame($obj3, Phinq::create($collection)->min(function($value) { return $value->id; }));
+		}
+
+		public function testMinWithNonNumbers() {
+			$obj1 = new Sphinqter('foo');
+			$obj2 = new Sphinqter('bar');
+			$obj3 = new Sphinqter('baz');
+
+			$collection = array($obj1, $obj2, $obj3);
+
+			self::assertSame($obj2, Phinq::create($collection)->min());
+			self::assertSame($obj2, Phinq::create($collection)->min(function($value) { return $value->id; }));
 		}
 
 	}
