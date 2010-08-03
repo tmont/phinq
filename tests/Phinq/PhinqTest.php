@@ -215,8 +215,16 @@
 			Phinq::create(array())->first();
 		}
 
+		public function testFirstWithFilter() {
+			self::assertSame(4, Phinq::create(array(1, 2, 3, 4, 5, 6))->first(function($value) { return $value > 3; }));
+		}
+
 		public function testFirstOrDefault() {
 			self::assertSame(1, Phinq::create(array(1, 2, 3, 4, 5, 6))->firstOrDefault());
+		}
+
+		public function testFirstOrDefaultWithFilter() {
+			self::assertSame(4, Phinq::create(array(1, 2, 3, 4, 5, 6))->first(function($value) { return $value > 3; }));
 		}
 
 		public function testFirstOrDefaultWithNoElements() {
@@ -225,6 +233,10 @@
 
 		public function testSingle() {
 			self::assertSame(1, Phinq::create(array(1))->single());
+		}
+
+		public function testSingleWithFilter() {
+			self::assertSame(6, Phinq::create(array(1, 2, 3, 4, 5, 6))->single(function($value) { return $value > 5; }));
 		}
 
 		public function testSingleWithNoElements() {
@@ -239,6 +251,10 @@
 
 		public function testSingleOrDefault() {
 			self::assertSame(1, Phinq::create(array(1))->singleOrDefault());
+		}
+
+		public function testSingleOrDefaultWithFilter() {
+			self::assertSame(6, Phinq::create(array(1, 2, 3, 4, 5, 6))->singleOrDefault(function($value) { return $value > 5; }));
 		}
 
 		public function testSingleOrDefaultWithNoElements() {

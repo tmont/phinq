@@ -17,7 +17,7 @@
 		 * @param  array $collection The initial collection to query on
 		 * @return Phinq
 		 */
-		public static function create(array $collection) {
+		public final static function create(array $collection) {
 			return new static($collection);
 		}
 
@@ -75,8 +75,8 @@
 			return $this;
 		}
 
-		public function first() {
-			$first = $this->firstOrDefault();
+		public function first(Closure $lambda = null) {
+			$first = $this->firstOrDefault($lambda);
 			if ($first === null) {
 				throw new OutOfBoundsException('Collection does not contain any elements');
 			}
@@ -84,8 +84,9 @@
 			return $first;
 		}
 
-		public function firstOrDefault() {
-			$collection = $this->toArray();
+		public function firstOrDefault(Closure $lambda = null) {
+			$collection = $this->getCollection($lambda);
+
 			if (empty($collection)) {
 				return null;
 			}
@@ -93,8 +94,8 @@
 			return $collection[0];
 		}
 
-		public function single() {
-			$single = $this->singleOrDefault();
+		public function single(Closure $lambda = null) {
+			$single = $this->singleOrDefault($lambda);
 			if ($single === null) {
 				throw new RuntimeException('Collection does not contain exactly one element');
 			}
@@ -102,8 +103,9 @@
 			return $single;
 		}
 
-		public function singleOrDefault() {
-			$collection = $this->toArray();
+		public function singleOrDefault(Closure $lambda = null) {
+			$collection = $this->getCollection($lambda);
+
 			if (empty($collection)) {
 				return null;
 			}
@@ -113,7 +115,17 @@
 
 			return $collection[0];
 		}
-		
+
+		protected function getCollection(Closure $lambda = null) {
+			$collection = $this->toArray();
+
+			if ($lambda !== null) {
+				$collection = self::create($collection)->where($lambda)->toArray();
+			}
+
+			return $collection;
+		}
+
 	}
 
 ?>
