@@ -51,6 +51,22 @@
 			self::assertSame(array(array(1), array(2), array(3)), $newCollection);
 		}
 
+		public function testSequenceEqual() {
+			self::assertTrue(Phinq::create(array(1, 2, 3, 4, 5, 6))->sequenceEqual(array(1, 2, 3, 4, 5, 6)));
+			self::assertTrue(Phinq::create(array())->sequenceEqual(array()));
+			self::assertTrue(Phinq::create(array('foo', 'bar'))->sequenceEqual(array('foo', 'bar')));
+			self::assertFalse(Phinq::create(array('bar', 'foo'))->sequenceEqual(array('foo', 'bar')));
+			self::assertFalse(Phinq::create(array(1, 2, 3))->sequenceEqual(array(3, 2, 1)));
+			self::assertFalse(Phinq::create(array(1, 2, 3))->sequenceEqual(array(1, 2)));
+		}
+
+		public function testSequenceEqualWithComparer() {
+			$equal = Phinq::create(array(new Sphinqter('foo'), new Sphinqter('bar')))
+				->sequenceEqual(array(new Sphinqter('foo'), new Sphinqter('bar')), new IdComparer());
+			
+			self::assertTrue($equal);
+		}
+
 	}
 
 ?>

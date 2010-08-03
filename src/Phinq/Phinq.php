@@ -505,9 +505,43 @@
 			return $this;
 		}
 
+		/**
+		 * Flattens a collection of collections into a single collection
+		 *
+		 * $lambda takes in one argument, the current element, and returns an array.
+		 *
+		 * @param Closure $lambda
+		 * @return Phinq
+		 */
 		public function selectMany(Closure $lambda) {
 			$this->queryQueue[] = new SelectManyExpression($lambda);
 			return $this;
+		}
+
+		/**
+		 * Determines whether two collections are equal, element for element
+		 *
+		 * @param array $otherCollection
+		 * @param EqualityComparer $comparer
+		 * @return bool
+		 */
+		public function sequenceEqual(array $otherCollection, EqualityComparer $comparer = null) {
+			$collection = $this->toArray();
+			$count = count($collection);
+
+			if ($count !== count($otherCollection)) {
+				return false;
+			}
+
+			$comparer = $comparer ?: DefaultEqualityComparer::getInstance();
+
+			for ($i = 0; $i < $count; $i++) {
+				if ($comparer->equals($collection[$i], $otherCollection[$i]) !== 0) {
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 	}
