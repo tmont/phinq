@@ -391,6 +391,16 @@
 			return count($collection);
 		}
 
+		/**
+		 * Reverses the elements in the collection
+		 *
+		 * @return Phinq
+		 */
+		public function reverse() {
+			$this->queryQueue[] = new ReverseQuery();
+			return $this;
+		}
+
 	}
 
 ?>

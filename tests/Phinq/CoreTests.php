@@ -274,6 +274,13 @@
 			self::assertSame(3, Phinq::create(array(1, 2, 3))->count(function($value) { return true; }));
 		}
 
+		public function testReverse() {
+			$collection = Phinq::create(array(1, 2, 3))->reverse()->toArray();
+			
+			self::assertSame(array(3, 2, 1), $collection);
+			self::assertSame(array(), Phinq::create(array())->reverse()->toArray());
+		}
+
 	}
 	
 ?>
