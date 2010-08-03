@@ -222,6 +222,33 @@
 		public function testFirstOrDefaultWithNoElements() {
 			self::assertNull(Phinq::create(array())->firstOrDefault());
 		}
+
+		public function testSingle() {
+			self::assertSame(1, Phinq::create(array(1))->single());
+		}
+
+		public function testSingleWithNoElements() {
+			$this->setExpectedException('RuntimeException');
+			Phinq::create(array())->single();
+		}
+
+		public function testSingleWithMoreThanOneElement() {
+			$this->setExpectedException('RuntimeException');
+			Phinq::create(array(1, 2))->single();
+		}
+
+		public function testSingleOrDefault() {
+			self::assertSame(1, Phinq::create(array(1))->singleOrDefault());
+		}
+
+		public function testSingleOrDefaultWithNoElements() {
+			self::assertNull(Phinq::create(array())->singleOrDefault());
+		}
+
+		public function testSingleOrDefaultWithMoreThanOneElement() {
+			$this->setExpectedException('RuntimeException');
+			Phinq::create(array(1, 2))->singleOrDefault();
+		}
 	}
 
 	class IdComparer implements \Phinq\EqualityComparer {

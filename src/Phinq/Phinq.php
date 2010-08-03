@@ -2,7 +2,7 @@
 
 	namespace Phinq;
 
-	use Closure, OutOfBoundsException;
+	use Closure, OutOfBoundsException, RuntimeException;
 
 	class Phinq {
 
@@ -88,6 +88,27 @@
 			$collection = $this->toArray();
 			if (empty($collection)) {
 				return null;
+			}
+
+			return $collection[0];
+		}
+
+		public function single() {
+			$single = $this->singleOrDefault();
+			if ($single === null) {
+				throw new RuntimeException('Collection does not contain exactly one element');
+			}
+
+			return $single;
+		}
+
+		public function singleOrDefault() {
+			$collection = $this->toArray();
+			if (empty($collection)) {
+				return null;
+			}
+			if (count($collection) !== 1) {
+				throw new RuntimeException('Collection does not contain exactly one element');
 			}
 
 			return $collection[0];
