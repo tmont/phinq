@@ -211,7 +211,7 @@
 		}
 
 		public function testFirstWithNoElements() {
-			$this->setExpectedException('OutOfBoundsException');
+			$this->setExpectedException('Phinq\EmptyCollectionException');
 			Phinq::create(array())->first();
 		}
 
@@ -240,12 +240,12 @@
 		}
 
 		public function testSingleWithNoElements() {
-			$this->setExpectedException('RuntimeException');
+			$this->setExpectedException('BadMethodCallException');
 			Phinq::create(array())->single();
 		}
 
 		public function testSingleWithMoreThanOneElement() {
-			$this->setExpectedException('RuntimeException');
+			$this->setExpectedException('BadMethodCallException');
 			Phinq::create(array(1, 2))->single();
 		}
 
@@ -262,7 +262,7 @@
 		}
 
 		public function testSingleOrDefaultWithMoreThanOneElement() {
-			$this->setExpectedException('RuntimeException');
+			$this->setExpectedException('BadMethodCallException');
 			Phinq::create(array(1, 2))->singleOrDefault();
 		}
 
@@ -271,7 +271,7 @@
 		}
 
 		public function testLastWithNoElements() {
-			$this->setExpectedException('OutOfBoundsException');
+			$this->setExpectedException('Phinq\EmptyCollectionException');
 			Phinq::create(array())->last();
 		}
 
