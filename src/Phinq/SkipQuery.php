@@ -2,6 +2,8 @@
 
 	namespace Phinq;
 
+	use InvalidArgumentException;
+
 	class SkipQuery implements Query {
 
 		private $amount;

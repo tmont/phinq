@@ -69,6 +69,11 @@
 			$this->queryQueue[] = new SkipQuery($amount);
 			return $this;
 		}
+
+		public function take($amount) {
+			$this->queryQueue[] = new TakeQuery($amount);
+			return $this;
+		}
 		
 	}
 

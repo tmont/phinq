@@ -180,6 +180,31 @@
 			self::assertSame($collection, $newCollection);
 		}
 
+		public function testTake() {
+			$collection = array(1, 2, 3, 4, 5, 6);
+			$newCollection = Phinq::create($collection)
+				->take(2)
+				->toArray();
+
+			self::assertSame(array(1, 2), $newCollection);
+		}
+
+		public function testTakeWithNegative() {
+			$this->setExpectedException('OutOfBoundsException');
+			$collection = array(1, 2, 3, 4, 5, 6);
+			Phinq::create($collection)
+				->take(-2)
+				->toArray();
+		}
+
+		public function testTakeZeroReturnsEmptyArray() {
+			$collection = array(1, 2, 3, 4, 5, 6);
+			$newCollection = Phinq::create($collection)
+				->take(0)
+				->toArray();
+
+			self::assertSame(array(), $newCollection);
+		}
 	}
 
 	class IdComparer implements \Phinq\EqualityComparer {
