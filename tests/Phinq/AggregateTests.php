@@ -129,6 +129,17 @@
 			self::assertEquals(0, Phinq::create($collection)->average());
 		}
 
+		public function testSum() {
+			$collection = array(1, 2, 3, 4, 5, 6);
+			self::assertEquals(21, Phinq::create($collection)->sum());
+			self::assertEquals(42, Phinq::create($collection)->sum(function($value) { return $value * 2; }));
+		}
+
+		public function testSumWithNonNumericValues() {
+			$collection = array('foo', 'bar', 'baz');
+			self::assertEquals(0, Phinq::create($collection)->sum());
+		}
+
 	}
 	
 ?>

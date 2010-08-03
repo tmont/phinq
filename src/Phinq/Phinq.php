@@ -437,13 +437,14 @@
 		}
 
 		/**
-		 * Gets the average value of all values in the collection
+		 * Computes the average value of all values in the collection
 		 *
 		 * Note that this always returns a float, so if the collection is not
 		 * contained entirely of numeric values, $lambda should be a transform
 		 * function that maps each element to a numeric value. Otherwise, the result
 		 * may be unexpected.
 		 *
+		 * @param Closure $lambda
 		 * @return float Returns zero if the collection is empty
 		 */
 		public function average(Closure $lambda = null) {
@@ -453,6 +454,22 @@
 			}
 
 			return array_sum($collection) / count($collection);
+		}
+
+		/**
+		 * Compures the sum of all values in the collection
+		 *
+		 * Note that this always returns a float, so if the collection is not
+		 * contained entirely of numeric values, $lambda should be a transform
+		 * function that maps each element to a numeric value. Otherwise, the result
+		 * may be unexpected.
+		 *
+		 * @param Closure $lambda
+		 * @return float
+		 */
+		public function sum(Closure $lambda = null) {
+			$collection = $lambda !== null ? Phinq::create($this->toArray())->select($lambda)->toArray() : $this->toArray();
+			return array_sum($collection);
 		}
 
 	}
