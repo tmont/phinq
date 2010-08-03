@@ -544,8 +544,18 @@
 			return true;
 		}
 
-		public function join(array $collectionToJoin, Closure $innerKeySelector, Closure $outerKeySelector, Closure $resultSelector, EqualityComparer $comparer = null) {
-			$this->queryQueue[] = new JoinQuery($collectionToJoin, $innerKeySelector, $outerKeySelector, $resultSelector, $comparer);
+		/**
+		 * Correlates elements of the two collections based on matching keys
+		 *
+		 * @param array $collectionToJoinOn
+		 * @param Closure $innerKeySelector Takes one argument, the element's value, and returns the join key for that object
+		 * @param Closure $outerKeySelector Takes one argument, the element's value, and returns the join key for that object
+		 * @param Closure $resultSelector Takes two arguments, the matching elements from each collection, and returns a single value
+		 * @param EqualityComparer $comparer
+		 * @return Phinq
+		 */
+		public function join(array $collectionToJoinOn, Closure $innerKeySelector, Closure $outerKeySelector, Closure $resultSelector, EqualityComparer $comparer = null) {
+			$this->queryQueue[] = new JoinQuery($collectionToJoinOn, $innerKeySelector, $outerKeySelector, $resultSelector, $comparer);
 			return $this;
 		}
 
