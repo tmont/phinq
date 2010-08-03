@@ -2,7 +2,7 @@
 
 	namespace Phinq;
 
-	use Closure;
+	use Closure, OutOfBoundsException;
 
 	class Phinq {
 
@@ -74,8 +74,25 @@
 			$this->queryQueue[] = new TakeQuery($amount);
 			return $this;
 		}
+
+		public function first() {
+			$first = $this->firstOrDefault();
+			if ($first === null) {
+				throw new OutOfBoundsException('Collection does not contain any elements');
+			}
+
+			return $first;
+		}
+
+		public function firstOrDefault() {
+			$collection = $this->toArray();
+			if (empty($collection)) {
+				return null;
+			}
+
+			return $collection[0];
+		}
 		
 	}
 
 ?>
- 

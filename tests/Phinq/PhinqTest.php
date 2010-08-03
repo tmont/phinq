@@ -205,6 +205,23 @@
 
 			self::assertSame(array(), $newCollection);
 		}
+
+		public function testFirst() {
+			self::assertSame(1, Phinq::create(array(1, 2, 3, 4, 5, 6))->first());
+		}
+
+		public function testFirstWithNoElements() {
+			$this->setExpectedException('OutOfBoundsException');
+			Phinq::create(array())->first();
+		}
+
+		public function testFirstOrDefault() {
+			self::assertSame(1, Phinq::create(array(1, 2, 3, 4, 5, 6))->firstOrDefault());
+		}
+
+		public function testFirstOrDefaultWithNoElements() {
+			self::assertNull(Phinq::create(array())->firstOrDefault());
+		}
 	}
 
 	class IdComparer implements \Phinq\EqualityComparer {
