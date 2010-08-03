@@ -10,17 +10,17 @@
 		private $queryQueue = array();
 
 		public function __construct(array $collection) {
-			$this->collection = $collection;
+			$this->collection = array_values($collection);
 		}
 
 		public static function create(array $collection) {
-			return new self($collection);	
+			return new static($collection);
 		}
 
 		public function toArray() {
 			$collection = $this->collection;
 			foreach ($this->queryQueue as $query) {
-				$collection = $query->invoke($collection);
+				$collection = $query->execute($collection);
 			}
 
 			return $collection;
@@ -38,6 +38,16 @@
 
 		public function select(Closure $lambda) {
 			$this->queryQueue[] = new SelectExpression($lambda);
+			return $this;
+		}
+
+		public function union(array $collectionToUnion, EqualityComparer $comparer = null) {
+			$this->queryQueue[] = new UnionQuery($collectionToUnion, $comparer);
+			return $this;
+		}
+
+		public function concat(array $collectionToConcat) {
+			$this->queryQueue[] = new ConcatQuery($collectionToConcat);
 			return $this;
 		}
 		

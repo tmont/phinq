@@ -4,7 +4,7 @@
 
 	use Closure;
 
-	abstract class LambdaExpression implements Expression {
+	abstract class LambdaExpression implements Query {
 
 		private $lambda;
 

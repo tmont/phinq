@@ -4,12 +4,12 @@
 
 	class SelectExpression extends LambdaExpression {
 
-		public function invoke(array $collection) {
+		public function execute(array $collection) {
 			$newCollection = array();
 			$lambda = $this->getLambda();
 
 			$this->walk($collection, function($key, $value) use (&$newCollection, $lambda) {
-				$newCollection[$key] = $lambda($value, $key);
+				$newCollection[] = $lambda($value, $key);
 			});
 
 			return $newCollection;

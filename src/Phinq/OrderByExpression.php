@@ -13,10 +13,10 @@
 			$this->descending = (bool)$descending;
 		}
 
-		public function invoke(array $collection) {
+		public function execute(array $collection) {
 			$lambda = $this->getLambda();
 
-			uasort($collection, function($a, $b) use ($lambda) {
+			usort($collection, function($a, $b) use ($lambda) {
 				$resultA = $lambda($a);
 				$resultB = $lambda($b);
 
@@ -28,7 +28,7 @@
 			});
 
 			if ($this->descending) {
-				$collection = array_reverse($collection, true);
+				$collection = array_reverse($collection);
 			}
 
 			return $collection;
