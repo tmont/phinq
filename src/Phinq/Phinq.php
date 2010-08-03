@@ -13,6 +13,10 @@
 			$this->collection = array_values($collection);
 		}
 
+		/**
+		 * @param  array $collection The initial collection to query on
+		 * @return Phinq
+		 */
 		public static function create(array $collection) {
 			return new static($collection);
 		}
@@ -58,6 +62,11 @@
 
 		public function distinct(EqualityComparer $comparer = null) {
 			$this->queryQueue[] = new DistinctQuery($comparer);
+			return $this;
+		}
+
+		public function skip($amount) {
+			$this->queryQueue[] = new SkipQuery($amount);
 			return $this;
 		}
 		

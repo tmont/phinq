@@ -118,11 +118,11 @@
 
 		public function testDistinct() {
 			$collection = array(1, 2, 3, 1, 2, 4);
-			$intersectedCollection = Phinq::create($collection)
+			$newCollection = Phinq::create($collection)
 				->distinct()
 				->toArray();
 
-			self::assertSame(array(1, 2, 3, 4), $intersectedCollection);
+			self::assertSame(array(1, 2, 3, 4), $newCollection);
 		}
 
 		public function testDistinctWithComparer() {
@@ -131,11 +131,53 @@
 			$baz = new Sphinqter('baz');
 			
 			$collection = array($foo, $bar, $foo, $bar, $baz, $foo, $foo);
-			$intersectedCollection = Phinq::create($collection)
+			$newCollection = Phinq::create($collection)
 				->distinct(new IdComparer())
 				->toArray();
 
-			self::assertSame(array($foo, $bar, $baz), $intersectedCollection);
+			self::assertSame(array($foo, $bar, $baz), $newCollection);
+		}
+
+		public function testSkip() {
+			$collection = array(1, 2, 3, 4, 5, 6);
+			$newCollection = Phinq::create($collection)
+				->skip(2)
+				->toArray();
+
+			self::assertSame(array(3, 4, 5, 6), $newCollection);
+		}
+
+		public function testSkipNegative() {
+			$collection = array(1, 2, 3, 4, 5, 6);
+			$newCollection = Phinq::create($collection)
+				->skip(-2)
+				->toArray();
+
+			self::assertSame(array(4, 5, 6), $newCollection);
+		}
+
+		public function testSkipOutOfBounds() {
+			$collection = array(1, 2, 3, 4, 5, 6);
+			$newCollection = Phinq::create($collection)
+				->skip(10)
+				->toArray();
+
+			self::assertSame(array(), $newCollection);
+
+			$newCollection = Phinq::create($collection)
+				->skip(-10)
+				->toArray();
+
+			self::assertSame(array(1, 2, 3, 4, 5, 6), $newCollection);
+		}
+
+		public function testSkipZeroReturnsOriginalCollection() {
+			$collection = array(1, 2, 3, 4, 5, 6);
+			$newCollection = Phinq::create($collection)
+				->skip(0)
+				->toArray();
+
+			self::assertSame($collection, $newCollection);
 		}
 
 	}
