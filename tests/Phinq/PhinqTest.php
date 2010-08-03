@@ -130,7 +130,7 @@
 			$bar = new Sphinqter('bar');
 			$baz = new Sphinqter('baz');
 			
-			$collection = array($foo, $bar, $baz, $foo, $foo);
+			$collection = array($foo, $bar, $foo, $bar, $baz, $foo, $foo);
 			$intersectedCollection = Phinq::create($collection)
 				->distinct(new IdComparer())
 				->toArray();
