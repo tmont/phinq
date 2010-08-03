@@ -4,7 +4,7 @@
 
 	use Phinq\Phinq;
 
-	class WhereExpressionTest extends \PHPUnit_Framework_TestCase {
+	class PhinqTest extends \PHPUnit_Framework_TestCase {
 
 		public function testBasicFilter() {
 			$collection = array(1, 2, 3, 4, 5, 6);
@@ -78,12 +78,12 @@
 		public function testConcatWithObjects() {
 			$foo1 = new Sphinqter('foo');
 			$bar = new Sphinqter('bar');
-			$collection1 = array($foo1, $bar);
-
-			$foo2 = new Sphinqter('foo');
 			$baz = new Sphinqter('baz');
-
+			$foo2 = new Sphinqter('foo');
+			
+			$collection1 = array($foo1, $bar);
 			$collection2 = array($baz, $foo2);
+
 			$concatedCollection = Phinq::create($collection1)
 				->concat($collection2)
 				->toArray();
