@@ -37,6 +37,20 @@
 			self::assertSame(array($obj2, $obj2), $diffedCollection);
 		}
 
+		public function testSelectMany() {
+			$collection = array(1, 2, 3);
+
+			$newCollection = Phinq::create($collection)->selectMany(function($value) { return array($value, $value + 3); })->toArray();
+			self::assertSame(array(1, 4, 2, 5, 3, 6), $newCollection);
+		}
+
+		public function testSelectManyShouldNotRecursivelyFlatten() {
+			$collection = array(1, 2, 3);
+
+			$newCollection = Phinq::create($collection)->selectMany(function($value) { return array(array($value)); })->toArray();
+			self::assertSame(array(array(1), array(2), array(3)), $newCollection);
+		}
+
 	}
 
 ?>

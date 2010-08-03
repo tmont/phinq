@@ -492,8 +492,21 @@
 			return array_reduce($collection, $accumulator, $seed);
 		}
 
+		/**
+		 * Computes the set difference, i.e. all elements in the collection that are not
+		 * in $collectionToExcept
+		 *
+		 * @param array $collectionToExcept
+		 * @param EqualityComparer $comparer
+		 * @return Phinq
+		 */
 		public function except(array $collectionToExcept, EqualityComparer $comparer = null) {
 			$this->queryQueue[] = new ExceptQuery($collectionToExcept, $comparer);
+			return $this;
+		}
+
+		public function selectMany(Closure $lambda) {
+			$this->queryQueue[] = new SelectManyExpression($lambda);
 			return $this;
 		}
 
