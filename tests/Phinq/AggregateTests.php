@@ -12,20 +12,48 @@
 				->groupBy(function($value) { return $value[0]; })
 				->toArray();
 
-			self::assertEquals(2, count($groupings));
-			self::assertEquals('f', $groupings[0]->getKey());
-			self::assertEquals('b', $groupings[1]->getKey());
+			self::assertSame(2, count($groupings));
+			self::assertSame('f', $groupings[0]->getKey());
+			self::assertSame('b', $groupings[1]->getKey());
 
 			$stringsThatStartWithF = $groupings[0]->toArray();
 			$stringsThatStartWithB = $groupings[1]->toArray();
 
-			self::assertEquals(1, count($stringsThatStartWithF));
-			self::assertEquals('foo', $stringsThatStartWithF[0]);
+			self::assertSame(1, count($stringsThatStartWithF));
+			self::assertSame('foo', $stringsThatStartWithF[0]);
 
-			self::assertEquals(3, count($stringsThatStartWithB));
-			self::assertEquals('bar', $stringsThatStartWithB[0]);
-			self::assertEquals('baz', $stringsThatStartWithB[1]);
-			self::assertEquals('bat', $stringsThatStartWithB[2]);
+			self::assertSame(3, count($stringsThatStartWithB));
+			self::assertSame('bar', $stringsThatStartWithB[0]);
+			self::assertSame('baz', $stringsThatStartWithB[1]);
+			self::assertSame('bat', $stringsThatStartWithB[2]);
+		}
+
+		public function testGroupByWithObjectAsKey() {
+			$id1 = new Sphinqter('foo');
+			$id2 = new Sphinqter('foo');
+			
+			$foo = new Sphinqter($id1);
+			$bar = new Sphinqter($id2);
+			$baz = new Sphinqter($id1);
+			
+			$collection = array($foo, $bar, $baz);
+			$groupings = Phinq::create($collection)
+				->groupBy(function($value) { return $value->id; })
+				->toArray();
+
+			self::assertSame(2, count($groupings));
+			self::assertSame($id1, $groupings[0]->getKey());
+			self::assertSame($id2, $groupings[1]->getKey());
+
+			$sphinqtersWithId1 = $groupings[0]->toArray();
+			$sphinqtersWithId2 = $groupings[1]->toArray();
+
+			self::assertSame(2, count($sphinqtersWithId1));
+			self::assertSame($foo, $sphinqtersWithId1[0]);
+			self::assertSame($baz, $sphinqtersWithId1[1]);
+
+			self::assertSame(1, count($sphinqtersWithId2));
+			self::assertSame($bar, $sphinqtersWithId2[0]);
 		}
 
 	}
