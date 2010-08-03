@@ -116,6 +116,25 @@
 			return $collection[0];
 		}
 
+		public function last(Closure $lambda = null) {
+			$last = $this->lastOrDefault($lambda);
+			if ($last === null) {
+				throw new OutOfBoundsException('Collection does not contain any elements');
+			}
+
+			return $last;
+		}
+
+		public function lastOrDefault(Closure $lambda = null) {
+			$collection = $this->getCollection($lambda);
+
+			if (empty($collection)) {
+				return null;
+			}
+
+			return end($collection);
+		}
+
 		protected function getCollection(Closure $lambda = null) {
 			$collection = $this->toArray();
 

@@ -224,7 +224,7 @@
 		}
 
 		public function testFirstOrDefaultWithFilter() {
-			self::assertSame(4, Phinq::create(array(1, 2, 3, 4, 5, 6))->first(function($value) { return $value > 3; }));
+			self::assertSame(4, Phinq::create(array(1, 2, 3, 4, 5, 6))->firstOrDefault(function($value) { return $value > 3; }));
 		}
 
 		public function testFirstOrDefaultWithNoElements() {
@@ -265,6 +265,33 @@
 			$this->setExpectedException('RuntimeException');
 			Phinq::create(array(1, 2))->singleOrDefault();
 		}
+
+		public function tstLast() {
+			self::assertSame(6, Phinq::create(array(1, 2, 3, 4, 5, 6))->last());
+		}
+
+		public function testLastWithNoElements() {
+			$this->setExpectedException('OutOfBoundsException');
+			Phinq::create(array())->last();
+		}
+
+		public function testLastWithFilter() {
+			self::assertSame(2, Phinq::create(array(1, 2, 3, 4, 5, 6))->last(function($value) { return $value < 3; }));
+		}
+
+		public function testLastOrDefault() {
+			self::assertSame(6, Phinq::create(array(1, 2, 3, 4, 5, 6))->lastOrDefault());
+		}
+
+		public function testLastOrDefaultWithFilter() {
+			self::assertSame(2, Phinq::create(array(1, 2, 3, 4, 5, 6))->lastOrDefault(function($value) { return $value < 3; }));
+		}
+
+		public function testLastOrDefaultWithNoElements() {
+			self::assertNull(Phinq::create(array())->lastOrDefault());
+		}
+
+
 	}
 
 	class IdComparer implements \Phinq\EqualityComparer {
