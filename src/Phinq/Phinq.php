@@ -2,7 +2,7 @@
 
 	namespace Phinq;
 
-	use Closure, OutOfBoundsException, RuntimeException;
+	use Closure, OutOfBoundsException, RuntimeException, InvalidArgumentException;
 
 	class Phinq {
 
@@ -133,6 +133,28 @@
 			}
 
 			return end($collection);
+		}
+
+		public function elementAt($index) {
+			if (!is_int($index)) {
+				throw new InvalidArgumentException('1st argument must be an integer');	
+			}
+
+			$collection = $this->getCollection();
+			if (empty($collection)) {
+				throw new EmptyCollectionException('Collection contains no elements');
+			}
+
+			$count = count($collection);
+			if ($index < 0) {
+				$index = $count + $index;
+			}
+
+			if ($index >= $count || $index < 0) {
+				throw new OutOfBoundsException('Collection does not contain an element at index ' . $index);
+			}
+
+			return $collection[$index];
 		}
 
 		protected function getCollection(Closure $lambda = null) {
