@@ -300,6 +300,11 @@
 			return $collection;
 		}
 
+		public function groupBy(Closure $lambda) {
+			$this->queryQueue[] = new GroupByExpression($lambda);
+			return $this;
+		}
+
 	}
 
 ?>
