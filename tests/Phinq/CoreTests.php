@@ -206,6 +206,17 @@
 			self::assertSame(array(), $newCollection);
 		}
 
+		public function testAll() {
+			$collection = array(1, 2, 3, 4, 5, 6);
+			self::assertTrue(Phinq::create($collection)->all(function($value) { return is_int($value); }));
+			self::assertFalse(Phinq::create($collection)->all(function($value) { return $value < 6; }));
+		}
+
+		public function testAllWithEmptyCollection() {
+			self::assertTrue(Phinq::create(array())->all(function($value) { return true; }));
+			self::assertTrue(Phinq::create(array())->all(function($value) { return false; }));
+		}
+
 	}
 	
 ?>

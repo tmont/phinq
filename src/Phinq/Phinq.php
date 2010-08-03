@@ -324,6 +324,18 @@
 			return $this;
 		}
 
+		/**
+		 * Verifies that every element in the collection satisfies the given predicate
+		 *
+		 * $predicate takes in one argument, the current element, and returns a boolean.
+		 *
+		 * @param Closure $predicate
+		 * @return bool
+		 */
+		public function all(Closure $predicate) {
+			return array_reduce($this->toArray(), function($current, $next) use ($predicate) { return $current && $predicate($next); }, true);
+		}
+
 	}
 
 ?>
