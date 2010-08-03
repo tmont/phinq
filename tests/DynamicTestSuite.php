@@ -27,9 +27,13 @@
 	
 	if (!is_dir($GLOBALS['path'])) {
 		$tempPath = $GLOBALS['path'] . 'Test.php';
+		$tempPath2 = $GLOBALS['path'] . 'Tests.php';
 		if (is_file($tempPath)) {
 			$GLOBALS['path'] = $tempPath;
-			unset($tempPath);
+			unset($tempPath, $tempPath2);
+		} else if (is_file($tempPath2)) {
+			$GLOBALS['path'] = $tempPath2;
+			unset($tempPath, $tempPath2);
 		} else {
 			fwrite(STDERR, $GLOBALS['path'] . ' is neither a directory nor a file');
 			exit(1);
@@ -46,7 +50,7 @@
 			if (
 				$file->isFile() &&
 				strpos($file->getPathName(), DIRECTORY_SEPARATOR . '.') === false &&
-				preg_match('/Test\.php$/', $file->getFileName())
+				preg_match('/Tests?\.php$/', $file->getFileName())
 			) {
 				$testClass = ltrim(str_replace($testsDir, '', $file->getPathName()), DIRECTORY_SEPARATOR . '/');
 				$testClass = str_replace('Phinq\\', 'Phinq\\Tests\\', $testClass);

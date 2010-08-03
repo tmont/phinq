@@ -23,7 +23,7 @@
 			$file->isFile() && 
 			strpos($file->getPathName(), $testsDir . DIRECTORY_SEPARATOR . 'Phinq') === 0 &&
 			strpos($file->getPathName(), DIRECTORY_SEPARATOR . '.') === false && 
-			preg_match('/Test\.php$/', $file->getFileName())
+			preg_match('/Tests?\.php$/', $file->getFileName())
 		) {
 			$testClass = ltrim(str_replace($testsDir, '', $file->getPathName()), DIRECTORY_SEPARATOR . '/');
 			$testClass = str_replace('Phinq\\', 'Phinq\\Tests\\', $testClass);
