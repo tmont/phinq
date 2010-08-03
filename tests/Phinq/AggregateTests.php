@@ -58,8 +58,8 @@
 
 		public function testMax() {
 			$collection = array(2, 4, 3, 6, 5, 1);
-			self::assertSame(6, Phinq::create($collection)->max());
-			self::assertSame(3, Phinq::create($collection)->max(function($value) { return $value > 3 ? 0 : $value; }));
+			self::assertEquals(6, Phinq::create($collection)->max());
+			self::assertEquals(3, Phinq::create($collection)->max(function($value) { return $value > 3 ? 0 : $value; }));
 		}
 
 		public function testMaxWithEmptyCollection() {
@@ -89,8 +89,8 @@
 
 		public function testMin() {
 			$collection = array(2, 4, 3, 6, 5, 1);
-			self::assertSame(1, Phinq::create($collection)->min());
-			self::assertSame(6, Phinq::create($collection)->min(function($value) { return $value > 3 ? 0 : $value; }));
+			self::assertEquals(1, Phinq::create($collection)->min());
+			self::assertEquals(6, Phinq::create($collection)->min(function($value) { return $value > 3 ? 0 : $value; }));
 		}
 
 		public function testMinWithEmptyCollection() {
@@ -116,6 +116,17 @@
 
 			self::assertSame($obj2, Phinq::create($collection)->min());
 			self::assertSame($obj2, Phinq::create($collection)->min(function($value) { return $value->id; }));
+		}
+
+		public function testAverage() {
+			$collection = array(1, 2, 3, 4, 5, 6);
+			self::assertEquals(3.5, Phinq::create($collection)->average());
+			self::assertEquals(7, Phinq::create($collection)->average(function($value) { return $value * 2; }));
+		}
+
+		public function testAverageWithNonNumericValues() {
+			$collection = array('foo', 'bar', 'baz');
+			self::assertEquals(0, Phinq::create($collection)->average());
 		}
 
 	}

@@ -436,6 +436,25 @@
 			return $this->orderBy($lambda)->firstOrDefault();
 		}
 
+		/**
+		 * Gets the average value of all values in the collection
+		 *
+		 * Note that this always returns a float, so if the collection is not
+		 * contained entirely of numeric values, $lambda should be a transform
+		 * function that maps each element to a numeric value. Otherwise, the result
+		 * may be unexpected.
+		 *
+		 * @return float Returns zero if the collection is empty
+		 */
+		public function average(Closure $lambda = null) {
+			$collection = $lambda !== null ? Phinq::create($this->toArray())->select($lambda)->toArray() : $this->toArray();
+			if (empty($collection)) {
+				return 0;
+			}
+
+			return array_sum($collection) / count($collection);
+		}
+
 	}
 
 ?>
