@@ -144,16 +144,6 @@
 			self::assertEquals(0, Phinq::create($collection)->sum());
 		}
 
-		public function testAggregate() {
-			$factorial = Phinq::create(array(1, 2, 3, 4, 5))->aggregate(function($current, $next) { return $current * $next; }, 1);
-			self::assertEquals(120, $factorial);
-		}
-
-		public function testAggregateWithEmptyCollection() {
-			$factorial = Phinq::create(array())->aggregate(function($current, $next) { return $current * $next; }, 1);
-			self::assertEquals(1, $factorial);
-		}
-
 	}
 	
 ?>

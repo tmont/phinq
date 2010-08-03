@@ -492,6 +492,11 @@
 			return array_reduce($collection, $accumulator, $seed);
 		}
 
+		public function except(array $collectionToExcept, EqualityComparer $comparer = null) {
+			$this->queryQueue[] = new ExceptQuery($collectionToExcept, $comparer);
+			return $this;
+		}
+
 	}
 
 ?>
