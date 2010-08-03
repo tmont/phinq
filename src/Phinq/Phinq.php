@@ -29,6 +29,16 @@
 			return new static($collection);
 		}
 
+		protected function getCollection(Closure $predicate = null) {
+			$collection = $this->toArray();
+
+			if ($predicate !== null) {
+				$collection = self::create($collection)->where($predicate)->toArray();
+			}
+
+			return $collection;
+		}
+
 		/**
 		 * Executes the queries and returns the collection as an array
 		 *
@@ -44,22 +54,22 @@
 		}
 
 		/**
-		 * Filters the collection on a lambda expression
+		 * Filters the collection using the given predicate
 		 *
 		 * The lambda expression takes one argument, the value of the current collection member,
 		 * and returns a boolean indicating whether or not the member should be included in the
 		 * filtered collection.
 		 *
-		 * @param Closure $lambda
+		 * @param Closure $predicate
 		 * @return Phinq
 		 */
-		public function where(Closure $lambda) {
-			$this->queryQueue[] = new WhereExpression($lambda);
+		public function where(Closure $predicate) {
+			$this->queryQueue[] = new WhereExpression($predicate);
 			return $this;
 		}
 
 		/**
-		 * Orders the collection on a lambda expression
+		 * Orders the collection using the given lambda expression to determine sort index
 		 *
 		 * The lambda expression takes one argument, the value of the current collection member,
 		 * and returns a value which will used to sort the entire collection.
@@ -160,11 +170,11 @@
 		 * is empty
 		 *
 		 * @throws EmptyCollectionException
-		 * @param Closure $lambda Optional filter (see {@link where()})
+		 * @param Closure $predicate Optional filter (see {@link where()})
 		 * @return object
 		 */
-		public function first(Closure $lambda = null) {
-			$first = $this->firstOrDefault($lambda);
+		public function first(Closure $predicate = null) {
+			$first = $this->firstOrDefault($predicate);
 			if ($first === null) {
 				throw new EmptyCollectionException('Collection does not contain any elements');
 			}
@@ -175,11 +185,11 @@
 		/**
 		 * Gets the first element in the collection, or null if the collection is empty
 		 *
-		 * @param Closure $lambda Optional filter (see {@link where()})
+		 * @param Closure $predicate Optional filter (see {@link where()})
 		 * @return object|null The first element in the collection, or null if the collection is empty
 		 */
-		public function firstOrDefault(Closure $lambda = null) {
-			$collection = $this->getCollection($lambda);
+		public function firstOrDefault(Closure $predicate = null) {
+			$collection = $this->getCollection($predicate);
 
 			if (empty($collection)) {
 				return null;
@@ -193,11 +203,11 @@
 		 * exactly one element in the collection
 		 *
 		 * @throws BadMethodCallException
-		 * @param Closure $lambda Optional filter (see {@link where()})
+		 * @param Closure $predicate Optional filter (see {@link where()})
 		 * @return object
 		 */
-		public function single(Closure $lambda = null) {
-			$single = $this->singleOrDefault($lambda);
+		public function single(Closure $predicate = null) {
+			$single = $this->singleOrDefault($predicate);
 			if ($single === null) {
 				throw new BadMethodCallException('Collection does not contain exactly one element');
 			}
@@ -211,11 +221,11 @@
 		 * an exception if there is not exactly one or zero elements in the collection
 		 * 
 		 * @throws BadMethodCallException
-		 * @param Closure $lambda Optional filter (see {@link where()})
+		 * @param Closure $predicate Optional filter (see {@link where()})
 		 * @return object
 		 */
-		public function singleOrDefault(Closure $lambda = null) {
-			$collection = $this->getCollection($lambda);
+		public function singleOrDefault(Closure $predicate = null) {
+			$collection = $this->getCollection($predicate);
 
 			if (empty($collection)) {
 				return null;
@@ -231,11 +241,11 @@
 		 * Gets the last element in the collection, or throws an exception if the collection is empty
 		 *
 		 * @throws EmptyCollectionException
-		 * @param Closure $lambda Optional filter (see {@link where()})
+		 * @param Closure $predicate Optional filter (see {@link where()})
 		 * @return object
 		 */
-		public function last(Closure $lambda = null) {
-			$last = $this->lastOrDefault($lambda);
+		public function last(Closure $predicate = null) {
+			$last = $this->lastOrDefault($predicate);
 			if ($last === null) {
 				throw new EmptyCollectionException('Collection does not contain any elements');
 			}
@@ -246,11 +256,11 @@
 		/**
 		 * Gets the last element in the collection or null if the collection is empty
 		 *
-		 * @param Closure $lambda Optional filter (see {@link where()})
+		 * @param Closure $predicate Optional filter (see {@link where()})
 		 * @return object
 		 */
-		public function lastOrDefault(Closure $lambda = null) {
-			$collection = $this->getCollection($lambda);
+		public function lastOrDefault(Closure $predicate = null) {
+			$collection = $this->getCollection($predicate);
 
 			if (empty($collection)) {
 				return null;
@@ -309,16 +319,16 @@
 			return $collection[$index];
 		}
 
-		protected function getCollection(Closure $predicate = null) {
-			$collection = $this->toArray();
-
-			if ($predicate !== null) {
-				$collection = self::create($collection)->where($predicate)->toArray();
-			}
-
-			return $collection;
-		}
-
+		/**
+		 * Groups the collection into a collection of {@link Grouping}s based on
+		 * the given lambda expression
+		 *
+		 * $lambda takes in one argument, the current element, and returns the key
+		 * that determines how the collection is grouped.
+		 *
+		 * @param Closure $lambda
+		 * @return Phinq
+		 */
 		public function groupBy(Closure $lambda) {
 			$this->queryQueue[] = new GroupByExpression($lambda);
 			return $this;
@@ -328,6 +338,7 @@
 		 * Verifies that every element in the collection satisfies the given predicate
 		 *
 		 * $predicate takes in one argument, the current element, and returns a boolean.
+		 * Note that if the collection is empty, this method evaluates to true.
 		 *
 		 * @param Closure $predicate
 		 * @return bool
