@@ -309,11 +309,11 @@
 			return $collection[$index];
 		}
 
-		protected function getCollection(Closure $lambda = null) {
+		protected function getCollection(Closure $predicate = null) {
 			$collection = $this->toArray();
 
-			if ($lambda !== null) {
-				$collection = self::create($collection)->where($lambda)->toArray();
+			if ($predicate !== null) {
+				$collection = self::create($collection)->where($predicate)->toArray();
 			}
 
 			return $collection;
@@ -375,6 +375,20 @@
 			}
 
 			return false;
+		}
+
+		/**
+		 * Counts the number of elements in the collection, optionally filtered by the
+		 * given predicate
+		 *
+		 * $predicate should take one argument, the current element, and return a boolean.
+		 *
+		 * @param Closure $predicate
+		 * @return int
+		 */
+		public function count(Closure $predicate = null) {
+			$collection = $this->getCollection($predicate);
+			return count($collection);
 		}
 
 	}

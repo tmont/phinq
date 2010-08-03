@@ -263,6 +263,17 @@
 			self::assertTrue(Phinq::create($collection)->contains(new Sphinqter('baz'), $comparer));
 		}
 
+		public function testCount() {
+			self::assertSame(3, Phinq::create(array(1, 2, 3))->count());
+			self::assertSame(0, Phinq::create(array())->count());
+		}
+
+		public function testCountWithPredicate() {
+			self::assertSame(2, Phinq::create(array(1, 2, 3))->count(function($value) { return $value < 3; }));
+			self::assertSame(0, Phinq::create(array(1, 2, 3))->count(function($value) { return false; }));
+			self::assertSame(3, Phinq::create(array(1, 2, 3))->count(function($value) { return true; }));
+		}
+
 	}
 	
 ?>
