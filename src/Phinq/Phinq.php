@@ -264,18 +264,37 @@
 		 *
 		 * If $index is negative, gets the element at the specified index from the end.
 		 *
-		 * @throws EmptyCollectionException|InvalidArgumentException|OutOfBoundsException
+		 * @throws OutOfBoundsException
 		 * @param int $index
 		 * @return object
 		 */
 		public function elementAt($index) {
+			$element = $this->elementAtOrDefault($index);
+			if ($element === null) {
+				throw new OutOfBoundsException('Collection does not contain an element at index ' . $index);
+			}
+
+			return $element;
+		}
+
+		/**
+		 * Gets the element at the specified index or null if the collection does not contain
+		 * an element at that index
+		 *
+		 * If $index is negative, gets the element at the specified index from the end.
+		 *
+		 * @throws InvalidArgumentException
+		 * @param int $index
+		 * @return object|null
+		 */
+		public function elementAtOrDefault($index) {
 			if (!is_int($index)) {
-				throw new InvalidArgumentException('1st argument must be an integer');	
+				throw new InvalidArgumentException('1st argument must be an integer');
 			}
 
 			$collection = $this->getCollection();
 			if (empty($collection)) {
-				throw new EmptyCollectionException('Collection contains no elements');
+				return null;
 			}
 
 			$count = count($collection);
@@ -284,7 +303,7 @@
 			}
 
 			if ($index >= $count || $index < 0) {
-				throw new OutOfBoundsException('Collection does not contain an element at index ' . $index);
+				return null;
 			}
 
 			return $collection[$index];

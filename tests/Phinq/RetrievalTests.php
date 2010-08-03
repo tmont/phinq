@@ -104,7 +104,7 @@
 		}
 
 		public function testElementAtWithNegativeIndexBeyondLength() {
-			$this->setExpectedException('OutOfBoundsException', 'Collection does not contain an element at index -4');
+			$this->setExpectedException('OutOfBoundsException', 'Collection does not contain an element at index -10');
 			Phinq::create(array(1, 2, 3, 4, 5, 6))->elementAt(-10);
 		}
 
@@ -114,13 +114,29 @@
 		}
 
 		public function testElementAtWithEmptyCollection() {
-			$this->setExpectedException('Phinq\EmptyCollectionException');
+			$this->setExpectedException('OutOfBoundsException');
 			Phinq::create(array())->elementAt(0);
 		}
 
 		public function testElementAtWithNonIntegralIndex() {
 			$this->setExpectedException('InvalidArgumentException');
 			Phinq::create(array())->elementAt('foo');
+		}
+
+		public function testElementAtOrDefault() {
+			self::assertSame(1, Phinq::create(array(1, 2, 3, 4, 5, 6))->elementAtOrDefault(0));
+			self::assertSame(4, Phinq::create(array(1, 2, 3, 4, 5, 6))->elementAtOrDefault(3));
+			self::assertSame(6, Phinq::create(array(1, 2, 3, 4, 5, 6))->elementAtOrDefault(5));
+			
+			self::assertNull(Phinq::create(array(1, 2, 3, 4, 5, 6))->elementAtOrDefault(7));
+		}
+
+		public function testelementAtOrDefaultOrDefaultWithNegative() {
+			self::assertSame(6, Phinq::create(array(1, 2, 3, 4, 5, 6))->elementAtOrDefault(-1));
+			self::assertSame(4, Phinq::create(array(1, 2, 3, 4, 5, 6))->elementAtOrDefault(-3));
+			self::assertSame(1, Phinq::create(array(1, 2, 3, 4, 5, 6))->elementAtOrDefault(-6));
+
+			self::assertNull(Phinq::create(array(1, 2, 3, 4, 5, 6))->elementAtOrDefault(-10));
 		}
 
 	}
