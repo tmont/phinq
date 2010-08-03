@@ -349,9 +349,27 @@
 			if ($predicate === null && !empty($collection)) {
 				return true;
 			}
-			
+
 			foreach ($collection as $value) {
 				if ($predicate($value)) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/**
+		 * Verifies that the collection contains the specified value
+		 *
+		 * @param mixed $value The value to check for
+		 * @param EqualityComparer $comparer
+		 * @return bool
+		 */
+		public function contains($value, EqualityComparer $comparer = null) {
+			$comparer = $comparer ?: DefaultEqualityComparer::getInstance();
+			foreach ($this->toArray() as $element) {
+				if ($comparer->equals($value, $element) === 0) {
 					return true;
 				}
 			}

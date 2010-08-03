@@ -3,6 +3,7 @@
 	namespace Phinq\Tests;
 
 	use Phinq\Phinq;
+	use stdClass;
 
 	class CoreTests extends \PHPUnit_Framework_TestCase {
 
@@ -225,6 +226,41 @@
 		public function testAnyWithPredicate() {
 			self::assertTrue(Phinq::create(array(1, 2, 3, 4, 5, 6))->any(function($value) { return $value === 3; }));
 			self::assertFalse(Phinq::create(array())->any(function($value) { return $value !== null; }));
+		}
+
+		public function testContainsAndDefaultEqualityComparer() {
+			$obj = new stdClass();
+			$resource = xml_parser_create();
+			$collection = array(1, 2, 'foo', $obj, $resource, array('bar'), null);
+			
+			self::assertTrue(Phinq::create($collection)->contains(1));
+			self::assertTrue(Phinq::create($collection)->contains(2.0));
+			self::assertTrue(Phinq::create($collection)->contains('foo'));
+			self::assertTrue(Phinq::create($collection)->contains($obj));
+			self::assertTrue(Phinq::create($collection)->contains($resource));
+			self::assertTrue(Phinq::create($collection)->contains(array('bar')));
+			self::assertTrue(Phinq::create($collection)->contains(null));
+
+			self::assertFalse(Phinq::create($collection)->contains(new stdClass()));
+			self::assertFalse(Phinq::create($collection)->contains('2'));
+			self::assertFalse(Phinq::create($collection)->contains(xml_parser_create()));
+			self::assertFalse(Phinq::create($collection)->contains(array(1 => 'bar')));
+		}
+
+		public function testContainsWithComparer() {
+			$obj1 = new Sphinqter('foo');
+			$obj2 = new Sphinqter('bar');
+			$obj3 = new Sphinqter('baz');
+			
+			$collection = array($obj1, $obj2, $obj3);
+			$comparer = new IdComparer();
+
+			self::assertTrue(Phinq::create($collection)->contains($obj1, $comparer));
+			self::assertTrue(Phinq::create($collection)->contains($obj2, $comparer));
+			self::assertTrue(Phinq::create($collection)->contains($obj3, $comparer));
+			self::assertTrue(Phinq::create($collection)->contains(new Sphinqter('foo'), $comparer));
+			self::assertTrue(Phinq::create($collection)->contains(new Sphinqter('bar'), $comparer));
+			self::assertTrue(Phinq::create($collection)->contains(new Sphinqter('baz'), $comparer));
 		}
 
 	}

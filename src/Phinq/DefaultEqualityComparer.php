@@ -20,8 +20,8 @@
 		 * @todo Implement the negative part of each branch
 		 */
 		public function equals($a, $b) {
-			if (is_numeric($a)) {
-				return is_numeric($b) && $a == $b ? 0 : ($a < $b ? -1 : 1); //types don't have to match
+			if (is_int($a) || is_float($a)) {
+				return (is_int($b) || is_float($b)) && $a == $b ? 0 : ($a < $b ? -1 : 1);
 			} else if ($a === null) {
 				return $b === null ? 0 : 1;
 			} else if (is_string($a)) {
