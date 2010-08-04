@@ -598,6 +598,25 @@
 			return $this;
 		}
 
+		/**
+		 * Casts all elements in the collection to the specified type
+		 *
+		 * Note that isn't particularly useful in PHP, since there is no polymorphism, and
+		 * hence casting is not very relevant. But if you want to cast to array, int, string
+		 * and so forth, this will do it for you.
+		 *
+		 * Also note that internally this uses the appropriate cast token (e.g. <kbd>(int)</kbd>)
+		 * so if you try to cast stuff you shouldn't be (like an object to an int) then the native
+		 * PHP error will bubble up.
+		 *
+		 * @param string $type One of string, int, float, bool, array, object, binary or null
+		 * @return Phinq
+		 */
+		public function cast($type) {
+			$this->queryQueue[] = new CastQuery($type);
+			return $this;
+		}
+
 	}
 
 ?>

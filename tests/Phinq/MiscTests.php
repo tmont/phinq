@@ -3,6 +3,7 @@
 	namespace Phinq\Tests;
 
 	use Phinq\Phinq;
+	use stdClass;
 
 	class MiscTests extends \PHPUnit_Framework_TestCase {
 
@@ -124,6 +125,50 @@
 			$value = $joinedCollection[1];
 			self::assertSame($bar, $value['key']);
 			self::assertSame(array(), $value['matches']);
+		}
+
+		public function testCastToString() {
+			self::assertSame(array('1', '2', '3'), Phinq::create(range(1, 3))->cast('string')->toArray());
+		}
+
+		public function testCastToInt() {
+			self::assertSame(range(1, 3), Phinq::create(array('1', '2', '3'))->cast('int')->toArray());
+			self::assertSame(range(1, 3), Phinq::create(array('1', '2', '3'))->cast('integer')->toArray());
+		}
+
+		public function testCastToFloat() {
+			self::assertSame(array(1.1, 2.2, 3.3), Phinq::create(array('1.1', '2.2', '3.3'))->cast('float')->toArray());
+			self::assertSame(array(1.1, 2.2, 3.3), Phinq::create(array('1.1', '2.2', '3.3'))->cast('real')->toArray());
+			self::assertSame(array(1.1, 2.2, 3.3), Phinq::create(array('1.1', '2.2', '3.3'))->cast('double')->toArray());
+		}
+
+		public function testCastToBool() {
+			self::assertSame(array(true, false), Phinq::create(array(1, 0))->cast('bool')->toArray());
+			self::assertSame(array(true, false), Phinq::create(array(1, 0))->cast('boolean')->toArray());
+		}
+
+		public function testCastToArray() {
+			self::assertSame(array(array(1), array(2)), Phinq::create(array(1, 2))->cast('array')->toArray());
+		}
+
+		public function testCastToObject() {
+			$expected = new stdClass();
+			$expected->scalar = 'bar';
+			self::assertEquals(array($expected), Phinq::create(array('bar'))->cast('object')->toArray());
+		}
+
+		public function testCastToNull() {
+			self::assertSame(array_fill(0, 6, null), Phinq::create(array('foo', 0, new stdClass(), 1.3, xml_parser_create(), array()))->cast('null')->toArray());
+			self::assertSame(array_fill(0, 6, null), Phinq::create(array('foo', 0, new stdClass(), 1.3, xml_parser_create(), array()))->cast('unset')->toArray());
+		}
+
+		public function testCastToBinary() {
+			self::assertSame(array('foo'), Phinq::create(array('foo'))->cast('binary')->toArray());
+		}
+
+		public function testCastWithInvalidType() {
+			$this->setExpectedException('InvalidArgumentException');
+			Phinq::create(array('foo'))->cast('foo')->toArray();
 		}
 
 	}
