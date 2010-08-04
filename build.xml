@@ -74,7 +74,7 @@
 			<arg line="--recursive"/>
 			<arg line="--stub"/>
 			<arg value="${dir.src}/Phinq/bootstrap.php"/>
-			<arg value="${build.dist}/docparser.phar"/>
+			<arg value="${build.dist}/phinq.phar"/>
 		</exec>
 	</target>
 	
