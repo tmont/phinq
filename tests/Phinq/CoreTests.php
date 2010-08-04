@@ -181,8 +181,17 @@
 			self::assertSame($collection, $newCollection);
 		}
 
+		public function testSkipWhile() {
+			$collection = range(1, 6);
+			$newCollection = Phinq::create($collection)
+				->skipWhile(function($value) { return $value < 3; })
+				->toArray();
+
+			self::assertSame(array(3, 4, 5, 6), $newCollection);
+		}
+
 		public function testTake() {
-			$collection = array(1, 2, 3, 4, 5, 6);
+			$collection = range(1, 6);
 			$newCollection = Phinq::create($collection)
 				->take(2)
 				->toArray();
@@ -192,14 +201,14 @@
 
 		public function testTakeWithNegative() {
 			$this->setExpectedException('OutOfBoundsException');
-			$collection = array(1, 2, 3, 4, 5, 6);
+			$collection = range(1, 6);
 			Phinq::create($collection)
 				->take(-2)
 				->toArray();
 		}
 
 		public function testTakeZeroReturnsEmptyArray() {
-			$collection = array(1, 2, 3, 4, 5, 6);
+			$collection = range(1, 6);
 			$newCollection = Phinq::create($collection)
 				->take(0)
 				->toArray();
@@ -208,7 +217,7 @@
 		}
 
 		public function testAll() {
-			$collection = array(1, 2, 3, 4, 5, 6);
+			$collection = range(1, 6);
 			self::assertTrue(Phinq::create($collection)->all(function($value) { return is_int($value); }));
 			self::assertFalse(Phinq::create($collection)->all(function($value) { return $value < 6; }));
 		}
@@ -219,12 +228,12 @@
 		}
 
 		public function testAnyWithoutPredicate() {
-			self::assertTrue(Phinq::create(array(1, 2, 3, 4, 5, 6))->any());
+			self::assertTrue(Phinq::create(range(1, 6))->any());
 			self::assertFalse(Phinq::create(array())->any());
 		}
 
 		public function testAnyWithPredicate() {
-			self::assertTrue(Phinq::create(array(1, 2, 3, 4, 5, 6))->any(function($value) { return $value === 3; }));
+			self::assertTrue(Phinq::create(range(1, 6))->any(function($value) { return $value === 3; }));
 			self::assertFalse(Phinq::create(array())->any(function($value) { return $value !== null; }));
 		}
 

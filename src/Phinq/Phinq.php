@@ -144,13 +144,24 @@
 		}
 
 		/**
-		 * Ignores the first $amount elements in the collection
+		 * Bypasses the first $amount elements in the collection
 		 *
 		 * @param int $amount The amount of elements to skip, starting from index 0
 		 * @return Phinq
 		 */
 		public function skip($amount) {
 			$this->queryQueue[] = new SkipQuery($amount);
+			return $this;
+		}
+
+		/**
+		 * Bypasses all elements as long as the given predicate is satisfied
+		 *
+		 * @param Closure $predicate Takes one argument, the current element, and returns a boolean
+		 * @return Phinq
+		 */
+		public function skipWhile(Closure $predicate) {
+			$this->queryQueue[] = new SkipWhileExpression($predicate);
 			return $this;
 		}
 
