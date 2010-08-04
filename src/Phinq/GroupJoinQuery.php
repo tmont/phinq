@@ -4,7 +4,7 @@
 
 	use Closure;
 
-	class GroupJoinQuery implements Query {
+	class GroupJoinQuery extends ComparableQuery {
 
 		private $collectionToJoinOn;
 		private $innerKeySelector;
@@ -13,17 +13,17 @@
 		private $comparer;
 
 		public function __construct(array $collectionToJoinOn, Closure $innerKeySelector, Closure $outerKeySelector, Closure $resultSelector, EqualityComparer $comparer = null) {
+			parent::__construct($comparer);
 			$this->collectionToJoinOn = $collectionToJoinOn;
 			$this->innerKeySelector = $innerKeySelector;
 			$this->outerKeySelector = $outerKeySelector;
 			$this->resultSelector = $resultSelector;
-			$this->comparer = $comparer ?: DefaultEqualityComparer::getInstance();
 		}
 
 		public function execute(array $collection) {
 			$innerKeySelector = $this->innerKeySelector;
 			$outerKeySelector = $this->outerKeySelector;
-			$comparer         = $this->comparer;
+			$comparer         = $this->getComparer();
 			$outerCount       = count($this->collectionToJoinOn);
 			$outerCollection  = $this->collectionToJoinOn;
 			$dictionary       = new ComplexKeyDictionary();

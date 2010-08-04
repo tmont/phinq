@@ -2,18 +2,17 @@
 
 	namespace Phinq;
 
-	class IntersectQuery implements Query {
+	class IntersectQuery extends ComparableQuery {
 
 		private $collectionToIntersect;
-		private $comparer;
 
 		public function __construct(array $collectionToIntersect, EqualityComparer $comparer = null) {
+			parent::__construct($comparer);
 			$this->collectionToIntersect = array_values($collectionToIntersect);
-			$this->comparer = $comparer ?: DefaultEqualityComparer::getInstance();
 		}
 
 		public function execute(array $collection) {
-			$comparer = $this->comparer;
+			$comparer = $this->getComparer();
 			return array_values(array_uintersect($collection, $this->collectionToIntersect, function($a, $b) use ($comparer) { return $comparer->equals($a, $b); }));
 		}
 	}

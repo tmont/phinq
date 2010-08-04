@@ -4,27 +4,26 @@
 
 	use Closure;
 
-	class JoinQuery implements Query {
+	class JoinQuery extends ComparableQuery {
 
 		private $collectionToJoinOn;
 		private $innerKeySelector;
 		private $outerKeySelector;
 		private $resultSelector;
-		private $comparer;
 
 		public function __construct(array $collectionToJoinOn, Closure $innerKeySelector, Closure $outerKeySelector, Closure $resultSelector, EqualityComparer $comparer = null) {
+			parent::__construct($comparer);
 			$this->collectionToJoinOn = $collectionToJoinOn;
 			$this->innerKeySelector = $innerKeySelector;
 			$this->outerKeySelector = $outerKeySelector;
 			$this->resultSelector = $resultSelector;
-			$this->comparer = $comparer ?: DefaultEqualityComparer::getInstance();
 		}
 
 		public function execute(array $collection) {
 			$innerKeySelector = $this->innerKeySelector;
 			$outerKeySelector = $this->outerKeySelector;
 			$resultSelector   = $this->resultSelector;
-			$comparer         = $this->comparer;
+			$comparer         = $this->getComparer();
 			$outerCount       = count($this->collectionToJoinOn);
 			$outerCollection  = $this->collectionToJoinOn;
 			$newCollection    = array();

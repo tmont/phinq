@@ -2,18 +2,17 @@
 
 	namespace Phinq;
 
-	class ExceptQuery implements Query {
+	class ExceptQuery extends ComparableQuery {
 
-		private $comparer;
 		private $collectionToExcept;
 
 		public function __construct(array $collectionToExcept, EqualityComparer $comparer = null) {
-			$this->comparer = $comparer ?: DefaultEqualityComparer::getInstance();
+			parent::__construct($comparer);
 			$this->collectionToExcept = $collectionToExcept;
 		}
 
 		public function execute(array $collection) {
-			$comparer = $this->comparer;
+			$comparer = $this->getComparer();
 			return array_values(array_udiff($collection, $this->collectionToExcept, function($a, $b) use ($comparer) { return $comparer->equals($a, $b); }));
 		}
 	}
