@@ -2,7 +2,7 @@
 
 	namespace Phinq;
 
-	class SkipWhileExpression extends LambdaExpression {
+	class SkipWhileQuery extends LambdaDrivenQuery {
 
 		public function execute(array $collection) {
 			$sliceIndex = -1;

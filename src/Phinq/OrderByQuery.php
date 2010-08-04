@@ -4,7 +4,7 @@
 
 	use Closure;
 
-	class OrderByExpression extends LambdaExpression {
+	class OrderByQuery extends LambdaDrivenQuery {
 
 		private $descending;
 

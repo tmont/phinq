@@ -77,7 +77,7 @@
 		 * @return Phinq
 		 */
 		public function where(Closure $predicate) {
-			$this->addToQueue(new WhereExpression($predicate));
+			$this->addToQueue(new WhereQuery($predicate));
 			return $this;
 		}
 
@@ -92,7 +92,7 @@
 		 * @return Phinq
 		 */
 		public function orderBy(Closure $lambda, $descending = false) {
-			$this->addToQueue(new OrderByExpression($lambda, (bool)$descending));
+			$this->addToQueue(new OrderByQuery($lambda, (bool)$descending));
 			return $this;
 		}
 
@@ -106,7 +106,7 @@
 		 * @return Phinq
 		 */
 		public function select(Closure $lambda) {
-			$this->addToQueue(new SelectExpression($lambda));
+			$this->addToQueue(new SelectQuery($lambda));
 			return $this;
 		}
 
@@ -174,7 +174,7 @@
 		 * @return Phinq
 		 */
 		public function skipWhile(Closure $predicate) {
-			$this->addToQueue(new SkipWhileExpression($predicate));
+			$this->addToQueue(new SkipWhileQuery($predicate));
 			return $this;
 		}
 
@@ -196,7 +196,7 @@
 		 * @return Phinq
 		 */
 		public function takeWhile(Closure $predicate) {
-			$this->addToQueue(new TakeWhileExpression($predicate));
+			$this->addToQueue(new TakeWhileQuery($predicate));
 			return $this;
 		}
 
@@ -365,7 +365,7 @@
 		 * @return Phinq
 		 */
 		public function groupBy(Closure $lambda) {
-			$this->addToQueue(new GroupByExpression($lambda));
+			$this->addToQueue(new GroupByQuery($lambda));
 			return $this;
 		}
 
@@ -549,7 +549,7 @@
 		 * @return Phinq
 		 */
 		public function selectMany(Closure $lambda) {
-			$this->addToQueue(new SelectManyExpression($lambda));
+			$this->addToQueue(new SelectManyQuery($lambda));
 			return $this;
 		}
 
@@ -677,7 +677,7 @@
 		 * @return Phinq
 		 */
 		public function walk(Closure $lambda) {
-			$this->addToQueue(new WalkExpression($lambda));
+			$this->addToQueue(new WalkQuery($lambda));
 			return $this;
 		}
 

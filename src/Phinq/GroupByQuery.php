@@ -4,7 +4,7 @@
 
 	use Closure;
 
-	class GroupByExpression extends LambdaExpression {
+	class GroupByQuery extends LambdaDrivenQuery {
 
 		public function execute(array $collection) {
 			$lambda = $this->getLambda();

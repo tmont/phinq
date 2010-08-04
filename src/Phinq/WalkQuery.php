@@ -2,7 +2,7 @@
 
 	namespace Phinq;
 
-	class WalkExpression extends LambdaExpression {
+	class WalkQuery extends LambdaDrivenQuery {
 
 		public function execute(array $collection) {
 			$lambda = $this->getLambda();

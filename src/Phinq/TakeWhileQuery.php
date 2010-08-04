@@ -2,7 +2,7 @@
 
 	namespace Phinq;
 
-	class TakeWhileExpression extends LambdaExpression {
+	class TakeWhileQuery extends LambdaDrivenQuery {
 
 		public function execute(array $collection) {
 			$sliceIndex = -1;

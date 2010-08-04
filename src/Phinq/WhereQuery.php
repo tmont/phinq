@@ -2,7 +2,7 @@
 
 	namespace Phinq;
 
-	class WhereExpression extends LambdaExpression {
+	class WhereQuery extends LambdaDrivenQuery {
 
 		public function execute(array $collection) {
 			$filteredCollection = array();

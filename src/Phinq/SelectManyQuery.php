@@ -2,14 +2,14 @@
 
 	namespace Phinq;
 
-	class SelectManyExpression extends LambdaExpression {
+	class SelectManyQuery extends LambdaDrivenQuery {
 
 		public function execute(array $collection) {
 			$flattenedCollection = array();
 			$lambda = $this->getLambda();
 
 			$this->walk($collection, function($key, $value) use (&$flattenedCollection, $lambda) {
-				$flattenedCollection = array_merge($flattenedCollection, SelectManyExpression::nonRecursiveFlatten($lambda($value, $key)));
+				$flattenedCollection = array_merge($flattenedCollection, SelectManyQuery::nonRecursiveFlatten($lambda($value, $key)));
 			});
 
 			return $flattenedCollection;

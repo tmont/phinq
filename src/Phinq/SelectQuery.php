@@ -2,7 +2,7 @@
 
 	namespace Phinq;
 
-	class SelectExpression extends LambdaExpression {
+	class SelectQuery extends LambdaDrivenQuery {
 
 		public function execute(array $collection) {
 			$newCollection = array();
