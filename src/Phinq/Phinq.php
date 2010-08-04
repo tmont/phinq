@@ -617,6 +617,20 @@
 			return $this;
 		}
 
+		/**
+		 * Filters the collection to only objects of the specified type
+		 *
+		 * This uses the instanceof operator, so don't try to pass in "string" or
+		 * something else that is stupid.
+		 *
+		 * @param string $type The type to filter for
+		 * @return Phinq
+		 */
+		public function ofType($type) {
+			$this->queryQueue[] = new OfTypeQuery($type);
+			return $this;
+		}
+
 	}
 
 ?>

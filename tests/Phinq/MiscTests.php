@@ -171,6 +171,16 @@
 			Phinq::create(array('foo'))->cast('foo')->toArray();
 		}
 
+		public function testOfType() {
+			self::assertSame(array(), Phinq::create(array('foo'))->ofType('string')->toArray());
+
+			$sphinqter1 = new Sphinqter();
+			$sphinqter2 = new Sphinqter();
+			$collection = array($sphinqter1, $sphinqter2, 'foo');
+
+			self::assertSame(array($sphinqter1, $sphinqter2), Phinq::create($collection)->ofType('Phinq\Tests\Sphinqter')->toArray());
+		}
+
 	}
 
 ?>
