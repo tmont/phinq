@@ -4,6 +4,9 @@
 
 	use ArrayAccess, Iterator, Countable;
 
+	/**
+	 * Basically a dictionary that allows complex types (e.g. objects) as keys
+	 */
 	class ComplexKeyDictionary implements ArrayAccess, Iterator, Countable {
 
 		private $data = array();
