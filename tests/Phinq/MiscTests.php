@@ -187,6 +187,15 @@
 			self::assertSame(array('foo'), Phinq::create(array())->defaultIfEmpty('foo')->toArray());
 		}
 
+		public function testZip() {
+			self::assertSame(array('foobar'), Phinq::create(array('foo'))->zip(array('bar'), function($a, $b) { return $a . $b; })->toArray());
+		}
+
+		public function testZipWithDifferentSizeArrays() {
+			self::assertSame(array('foobar'), Phinq::create(array('foo', 'bar'))->zip(array('bar'), function($a, $b) { return $a . $b; })->toArray());
+			self::assertSame(array('foobar'), Phinq::create(array('foo'))->zip(array('bar', 'foo'), function($a, $b) { return $a . $b; })->toArray());
+		}
+
 	}
 
 ?>

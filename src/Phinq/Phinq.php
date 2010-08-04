@@ -643,6 +643,18 @@
 			return $this;
 		}
 
+		/**
+		 * Merges the given collection into the collection using the given result selector
+		 *
+		 * @param array $collectionToMerge
+		 * @param Closure $resultSelector Takes in two arguments, and returns a single value
+		 * @return Phinq
+		 */
+		public function zip(array $collectionToMerge, Closure $resultSelector) {
+			$this->queryQueue[] = new ZipQuery($collectionToMerge, $resultSelector);
+			return $this;
+		}
+
 	}
 
 ?>
