@@ -2,21 +2,25 @@
 
 	namespace Phinq;
 
-	use Closure, OutOfBoundsException, BadMethodCallException, InvalidArgumentException;
+	use Iterator, Closure, OutOfBoundsException, BadMethodCallException, InvalidArgumentException;
 
 	/**
 	 * A port of .NET's LINQ extension methods
 	 */
-	class Phinq {
+	class Phinq implements Iterator {
 
 		private $collection;
+		private $evaluatedCollection;
 		private $queryQueue = array();
+		private $index = 0;
+		private $isDirty = false;
 
 		/**
 		 * @param array $collection The initial collection to query on
 		 */
 		public function __construct(array $collection) {
 			$this->collection = array_values($collection);
+			$this->evaluatedCollection = $this->collection;
 		}
 
 		/**
@@ -39,18 +43,27 @@
 			return $collection;
 		}
 
+		protected final function addToQueue(Query $query) {
+			$this->queryQueue[] = $query;
+			$this->isDirty = true;
+		}
+
 		/**
 		 * Executes the queries and returns the collection as an array
 		 *
 		 * @return array
 		 */
 		public function toArray() {
-			$collection = $this->collection;
-			foreach ($this->queryQueue as $query) {
-				$collection = $query->execute($collection);
+			if ($this->isDirty || $this->evaluatedCollection === null) {
+				$this->index = 0;
+				$this->isDirty = false;
+				$this->evaluatedCollection = $this->collection;
+				foreach ($this->queryQueue as $query) {
+					$this->evaluatedCollection = $query->execute($this->evaluatedCollection);
+				}
 			}
 
-			return $collection;
+			return $this->evaluatedCollection;
 		}
 
 		/**
@@ -64,7 +77,7 @@
 		 * @return Phinq
 		 */
 		public function where(Closure $predicate) {
-			$this->queryQueue[] = new WhereExpression($predicate);
+			$this->addToQueue(new WhereExpression($predicate));
 			return $this;
 		}
 
@@ -79,7 +92,7 @@
 		 * @return Phinq
 		 */
 		public function orderBy(Closure $lambda, $descending = false) {
-			$this->queryQueue[] = new OrderByExpression($lambda, (bool)$descending);
+			$this->addToQueue(new OrderByExpression($lambda, (bool)$descending));
 			return $this;
 		}
 
@@ -93,7 +106,7 @@
 		 * @return Phinq
 		 */
 		public function select(Closure $lambda) {
-			$this->queryQueue[] = new SelectExpression($lambda);
+			$this->addToQueue(new SelectExpression($lambda));
 			return $this;
 		}
 
@@ -105,7 +118,7 @@
 		 * @return Phinq
 		 */
 		public function union(array $collectionToUnion, EqualityComparer $comparer = null) {
-			$this->queryQueue[] = new UnionQuery($collectionToUnion, $comparer);
+			$this->addToQueue(new UnionQuery($collectionToUnion, $comparer));
 			return $this;
 		}
 
@@ -117,7 +130,7 @@
 		 * @return Phinq
 		 */
 		public function intersect(array $collectionToIntersect, EqualityComparer $comparer = null) {
-			$this->queryQueue[] = new IntersectQuery($collectionToIntersect, $comparer);
+			$this->addToQueue(new IntersectQuery($collectionToIntersect, $comparer));
 			return $this;
 		}
 
@@ -128,7 +141,7 @@
 		 * @return Phinq
 		 */
 		public function concat(array $collectionToConcat) {
-			$this->queryQueue[] = new ConcatQuery($collectionToConcat);
+			$this->addToQueue(new ConcatQuery($collectionToConcat));
 			return $this;
 		}
 
@@ -139,7 +152,7 @@
 		 * @return Phinq
 		 */
 		public function distinct(EqualityComparer $comparer = null) {
-			$this->queryQueue[] = new DistinctQuery($comparer);
+			$this->addToQueue(new DistinctQuery($comparer));
 			return $this;
 		}
 
@@ -150,7 +163,7 @@
 		 * @return Phinq
 		 */
 		public function skip($amount) {
-			$this->queryQueue[] = new SkipQuery($amount);
+			$this->addToQueue(new SkipQuery($amount));
 			return $this;
 		}
 
@@ -161,7 +174,7 @@
 		 * @return Phinq
 		 */
 		public function skipWhile(Closure $predicate) {
-			$this->queryQueue[] = new SkipWhileExpression($predicate);
+			$this->addToQueue(new SkipWhileExpression($predicate));
 			return $this;
 		}
 
@@ -172,7 +185,7 @@
 		 * @return Phinq
 		 */
 		public function take($amount) {
-			$this->queryQueue[] = new TakeQuery($amount);
+			$this->addToQueue(new TakeQuery($amount));
 			return $this;
 		}
 
@@ -183,7 +196,7 @@
 		 * @return Phinq
 		 */
 		public function takeWhile(Closure $predicate) {
-			$this->queryQueue[] = new TakeWhileExpression($predicate);
+			$this->addToQueue(new TakeWhileExpression($predicate));
 			return $this;
 		}
 
@@ -352,7 +365,7 @@
 		 * @return Phinq
 		 */
 		public function groupBy(Closure $lambda) {
-			$this->queryQueue[] = new GroupByExpression($lambda);
+			$this->addToQueue(new GroupByExpression($lambda));
 			return $this;
 		}
 
@@ -430,7 +443,7 @@
 		 * @return Phinq
 		 */
 		public function reverse() {
-			$this->queryQueue[] = new ReverseQuery();
+			$this->addToQueue(new ReverseQuery());
 			return $this;
 		}
 
@@ -443,7 +456,7 @@
 		 */
 		public function max(Closure $lambda = null) {
 			$lambda = $lambda ?: function($value) { return $value; };
-			return $this->orderBy($lambda, true)->firstOrDefault();
+			return static::create($this->toArray())->orderBy($lambda, true)->firstOrDefault();
 		}
 
 		/**
@@ -455,7 +468,7 @@
 		 */
 		public function min(Closure $lambda = null) {
 			$lambda = $lambda ?: function($value) { return $value; };
-			return $this->orderBy($lambda)->firstOrDefault();
+			return static::create($this->toArray())->orderBy($lambda)->firstOrDefault();
 		}
 
 		/**
@@ -523,7 +536,7 @@
 		 * @return Phinq
 		 */
 		public function except(array $collectionToExcept, EqualityComparer $comparer = null) {
-			$this->queryQueue[] = new ExceptQuery($collectionToExcept, $comparer);
+			$this->addToQueue(new ExceptQuery($collectionToExcept, $comparer));
 			return $this;
 		}
 
@@ -536,7 +549,7 @@
 		 * @return Phinq
 		 */
 		public function selectMany(Closure $lambda) {
-			$this->queryQueue[] = new SelectManyExpression($lambda);
+			$this->addToQueue(new SelectManyExpression($lambda));
 			return $this;
 		}
 
@@ -577,7 +590,7 @@
 		 * @return Phinq
 		 */
 		public function join(array $collectionToJoinOn, Closure $innerKeySelector, Closure $outerKeySelector, Closure $resultSelector, EqualityComparer $comparer = null) {
-			$this->queryQueue[] = new JoinQuery($collectionToJoinOn, $innerKeySelector, $outerKeySelector, $resultSelector, $comparer);
+			$this->addToQueue(new JoinQuery($collectionToJoinOn, $innerKeySelector, $outerKeySelector, $resultSelector, $comparer));
 			return $this;
 		}
 
@@ -594,7 +607,7 @@
 		 * @return Phinq
 		 */
 		public function groupJoin(array $collectionToJoinOn, Closure $innerKeySelector, Closure $outerKeySelector, Closure $resultSelector, EqualityComparer $comparer = null) {
-			$this->queryQueue[] = new GroupJoinQuery($collectionToJoinOn, $innerKeySelector, $outerKeySelector, $resultSelector, $comparer);
+			$this->addToQueue(new GroupJoinQuery($collectionToJoinOn, $innerKeySelector, $outerKeySelector, $resultSelector, $comparer));
 			return $this;
 		}
 
@@ -613,7 +626,7 @@
 		 * @return Phinq
 		 */
 		public function cast($type) {
-			$this->queryQueue[] = new CastQuery($type);
+			$this->addToQueue(new CastQuery($type));
 			return $this;
 		}
 
@@ -627,7 +640,7 @@
 		 * @return Phinq
 		 */
 		public function ofType($type) {
-			$this->queryQueue[] = new OfTypeQuery($type);
+			$this->addToQueue(new OfTypeQuery($type));
 			return $this;
 		}
 
@@ -639,7 +652,7 @@
 		 * @return Phinq
 		 */
 		public function defaultIfEmpty($defaultValue = null) {
-			$this->queryQueue[] = new DefaultIfEmptyQuery($defaultValue);
+			$this->addToQueue(new DefaultIfEmptyQuery($defaultValue));
 			return $this;
 		}
 
@@ -651,7 +664,7 @@
 		 * @return Phinq
 		 */
 		public function zip(array $collectionToMerge, Closure $resultSelector) {
-			$this->queryQueue[] = new ZipQuery($collectionToMerge, $resultSelector);
+			$this->addToQueue(new ZipQuery($collectionToMerge, $resultSelector));
 			return $this;
 		}
 
@@ -664,10 +677,45 @@
 		 * @return Phinq
 		 */
 		public function walk(Closure $lambda) {
-			$this->queryQueue[] = new WalkExpression($lambda);
+			$this->addToQueue(new WalkExpression($lambda));
 			return $this;
 		}
 
+		/**
+		 * @ignore
+		 */
+		public function current() {
+			$collection = $this->toArray();
+			return $collection[$this->index];
+		}
+
+		/**
+		 * @ignore
+		 */
+		public function key() {
+			return $this->index;
+		}
+
+		/**
+		 * @ignore
+		 */
+		public function next() {
+			$this->index++;
+		}
+
+		/**
+		 * @ignore
+		 */
+		public function rewind() {
+			$this->index = 0;
+		}
+
+		/**
+		 * @ignore
+		 */
+		public function valid() {	
+			return array_key_exists($this->index, $this->toArray());
+		}
 	}
 
 ?>
