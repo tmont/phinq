@@ -181,6 +181,12 @@
 			self::assertSame(array($sphinqter1, $sphinqter2), Phinq::create($collection)->ofType('Phinq\Tests\Sphinqter')->toArray());
 		}
 
+		public function testDefaultIfEmpty() {
+			self::assertSame(array('foo'), Phinq::create(array('foo'))->defaultIfEmpty()->toArray());
+			self::assertSame(array(null), Phinq::create(array())->defaultIfEmpty()->toArray());
+			self::assertSame(array('foo'), Phinq::create(array())->defaultIfEmpty('foo')->toArray());
+		}
+
 	}
 
 ?>

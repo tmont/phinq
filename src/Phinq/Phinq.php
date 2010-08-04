@@ -631,6 +631,18 @@
 			return $this;
 		}
 
+		/**
+		 * Returns the collection if non-empty, or if empty a collection containing the
+		 * given default value
+		 *
+		 * @param mixed $defaultValue
+		 * @return Phinq
+		 */
+		public function defaultIfEmpty($defaultValue = null) {
+			$this->queryQueue[] = new DefaultIfEmptyQuery($defaultValue);
+			return $this;
+		}
+
 	}
 
 ?>
