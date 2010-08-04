@@ -6,10 +6,10 @@
 
 		public function execute(array $collection) {
 			$flattenedCollection = array();
-			$lambda = $this->getLambda();
+			$lambda = $this->getLambdaExpression();
 
-			$this->walk($collection, function($key, $value) use (&$flattenedCollection, $lambda) {
-				$flattenedCollection = array_merge($flattenedCollection, Util::nonRecursiveFlatten($lambda($value, $key)));
+			array_walk($collection, function($value, $key) use (&$flattenedCollection, $lambda) {
+				$flattenedCollection = array_merge($flattenedCollection, Util::nonRecursiveFlatten($lambda($value)));
 			});
 
 			return $flattenedCollection;

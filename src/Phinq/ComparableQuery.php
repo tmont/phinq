@@ -2,7 +2,7 @@
 
 	namespace Phinq;
 
-	abstract class ComparableQuery implements Query {
+	abstract class ComparableQuery implements Query, Comparer {
 
 		private $comparer;
 

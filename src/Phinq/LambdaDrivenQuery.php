@@ -4,7 +4,7 @@
 
 	use Closure;
 
-	abstract class LambdaDrivenQuery implements Query {
+	abstract class LambdaDrivenQuery implements Query, LambdaDriven {
 
 		private $lambda;
 
@@ -12,12 +12,8 @@
 			$this->lambda = $lambda;
 		}
 
-		public final function getLambda() {
-			return $this->lambda;	
-		}
-
-		protected final function walk(array $collection, Closure $lambda) {
-			array_walk($collection, function($value, $key) use ($lambda) { $lambda($key, $value); });
+		public final function getLambdaExpression() {
+			return $this->lambda;
 		}
 
 	}

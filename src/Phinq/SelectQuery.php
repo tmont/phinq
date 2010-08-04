@@ -6,10 +6,10 @@
 
 		public function execute(array $collection) {
 			$newCollection = array();
-			$lambda = $this->getLambda();
+			$lambda = $this->getLambdaExpression();
 
-			$this->walk($collection, function($key, $value) use (&$newCollection, $lambda) {
-				$newCollection[] = $lambda($value, $key);
+			array_walk($collection, function($value, $key) use (&$newCollection, $lambda) {
+				$newCollection[] = $lambda($value);
 			});
 
 			return $newCollection;

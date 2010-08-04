@@ -14,7 +14,7 @@
 		}
 
 		public function execute(array $collection) {
-			$lambda = $this->getLambda();
+			$lambda = $this->getLambdaExpression();
 
 			usort($collection, function($a, $b) use ($lambda) {
 				$resultA = $lambda($a);
