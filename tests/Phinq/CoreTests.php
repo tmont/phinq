@@ -216,6 +216,15 @@
 			self::assertSame(array(), $newCollection);
 		}
 
+		public function testTakeWhile() {
+			$collection = range(1, 6);
+			$newCollection = Phinq::create($collection)
+				->takeWhile(function($value) { return $value < 3; })
+				->toArray();
+
+			self::assertSame(array(1, 2), $newCollection);
+		}
+
 		public function testAll() {
 			$collection = range(1, 6);
 			self::assertTrue(Phinq::create($collection)->all(function($value) { return is_int($value); }));

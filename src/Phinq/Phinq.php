@@ -177,6 +177,17 @@
 		}
 
 		/**
+		 * Returns elements as long as the given predicate is satisfied
+		 *
+		 * @param Closure $predicate Takes one argument, the current element, and returns a boolean
+		 * @return Phinq
+		 */
+		public function takeWhile(Closure $predicate) {
+			$this->queryQueue[] = new TakeWhileExpression($predicate);
+			return $this;
+		}
+
+		/**
 		 * Gets the first element in the collection, or throws an exception if the collection
 		 * is empty
 		 *
