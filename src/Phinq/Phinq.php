@@ -559,6 +559,23 @@
 			return $this;
 		}
 
+		/**
+		 * Correlates elements into groupings of the two collections based on matching keys
+		 *
+		 * This is basically an outer join.
+		 *
+		 * @param array $collectionToJoinOn
+		 * @param Closure $innerKeySelector Takes one argument, the element's value, and returns the join key for that object
+		 * @param Closure $outerKeySelector Takes one argument, the element's value, and returns the join key for that object
+		 * @param Closure $resultSelector Takes two arguments, the matching elements from each collection, and returns a single value
+		 * @param EqualityComparer $comparer
+		 * @return Phinq
+		 */
+		public function groupJoin(array $collectionToJoinOn, Closure $innerKeySelector, Closure $outerKeySelector, Closure $resultSelector, EqualityComparer $comparer = null) {
+			$this->queryQueue[] = new GroupJoinQuery($collectionToJoinOn, $innerKeySelector, $outerKeySelector, $resultSelector, $comparer);
+			return $this;
+		}
+
 	}
 
 ?>

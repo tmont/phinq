@@ -98,6 +98,34 @@
 			self::assertSame(array('first: 1, second: 3', 'first: 1, second: 4'), $joinedCollection);
 		}
 
+		public function testGroupJoin() {
+			$foo = new Sphinqter('foo', 1);
+			$bar = new Sphinqter('bar', 2);
+			$collection = array($foo, $bar);
+			$fooJoin1 = new Sphinqter('foo', 3);
+			$fooJoin2 = new Sphinqter('foo', 4);
+			$collectionToJoinOn = array($fooJoin1, $fooJoin2);
+
+			$joinedCollection = Phinq::create($collection)
+				->groupJoin(
+					$collectionToJoinOn,
+					function($value) { return $value; },
+					function($value) { return $value; },
+					function($key, array $matches) { return array('key' => $key, 'matches' => $matches); },
+					new IdComparer()
+				)->toArray();
+
+			self::assertEquals(2, count($joinedCollection));
+
+			$value = $joinedCollection[0];
+			self::assertSame($foo, $value['key']);
+			self::assertSame(array($fooJoin1, $fooJoin2), $value['matches']);
+
+			$value = $joinedCollection[1];
+			self::assertSame($bar, $value['key']);
+			self::assertSame(array(), $value['matches']);
+		}
+
 	}
 
 ?>
