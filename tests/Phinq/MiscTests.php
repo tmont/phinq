@@ -196,6 +196,13 @@
 			self::assertSame(array('foobar'), Phinq::create(array('foo'))->zip(array('bar', 'foo'), function($a, $b) { return $a . $b; })->toArray());
 		}
 
+		public function testWalk() {
+			$temp = array();
+
+			self::assertSame(array('foo', 'bar'), Phinq::create(array('foo', 'bar'))->walk(function($value) use (&$temp) { $temp[] = $value; })->toArray());
+			self::assertSame(array('foo', 'bar'), $temp);
+		}
+
 	}
 
 ?>

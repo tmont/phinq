@@ -655,6 +655,19 @@
 			return $this;
 		}
 
+		/**
+		 * Applies a lambda function to each element
+		 *
+		 * This does NOT modify the collection in any way.
+		 *
+		 * @param Closure $lambda Takes one argument, the current element, with no return value
+		 * @return Phinq
+		 */
+		public function walk(Closure $lambda) {
+			$this->queryQueue[] = new WalkExpression($lambda);
+			return $this;
+		}
+
 	}
 
 ?>
