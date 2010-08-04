@@ -148,6 +148,13 @@
 			self::assertSame(array(3, 4, 5, 6), $newCollection);
 		}
 
+		public function testSkipWithInvalidAmount() {
+			$this->setExpectedException('InvalidArgumentException');
+			$newCollection = Phinq::create(range(1, 6))
+				->skip('foo')
+				->toArray();
+		}
+
 		public function testSkipNegative() {
 			$collection = array(1, 2, 3, 4, 5, 6);
 			$newCollection = Phinq::create($collection)
@@ -197,6 +204,13 @@
 				->toArray();
 
 			self::assertSame(array(1, 2), $newCollection);
+		}
+
+		public function testTakeWithInvalidAmount() {
+			$this->setExpectedException('InvalidArgumentException');
+			Phinq::create(range(1, 6))
+				->take('foo')
+				->toArray();
 		}
 
 		public function testTakeWithNegative() {

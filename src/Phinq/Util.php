@@ -8,14 +8,10 @@
 		private function __construct() {}
 		//@codeCoverageIgnoreEnd
 
-		public static function nonRecursiveFlatten($array) {
+		public static function nonRecursiveFlatten(array $array) {
 			$flattened = array();
-			if (is_array($array)) {
-				foreach ($array as $value) {
-					$flattened[] = $value;
-				}
-			} else {
-				$flattened[] = $array;
+			foreach ($array as $value) {
+				$flattened[] = $value;
 			}
 
 			return $flattened;
@@ -34,9 +30,13 @@
 				return is_array($b) && $a === $b ? 0 : ($a < $b ? -1 : 1); //keys must match
 			} else if (is_resource($a)) {
 				return is_resource($b) && $a === $b ? 0 : ($a < $b ? -1 : 1);
+			
+			//@codeCoverageIgnoreStart
 			} else {
+				//this is just a safeguard in case PHP adds more types or something
 				return $a === $b ? 0 : ($a < $b ? -1 : 1);
 			}
+			//@codeCoverageIgnoreEnd
 		}
 
 	}

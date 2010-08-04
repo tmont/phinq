@@ -9,10 +9,6 @@
 		private $data = array();
 		private $index = 0;
 
-		public function toArray() {
-			return $this->data;
-		}
-
 		private function findOffsetIndex($offset) {
 			foreach ($this->data as $i => $datum) {
 				if ($datum['key'] === $offset) {
