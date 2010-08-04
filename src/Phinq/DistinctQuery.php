@@ -13,7 +13,6 @@
 		public function execute(array $collection) {
 			//this is pretty lame, but you can't pass a user-defined function to array_unique
 			//spl_object_hash() could have been useful, but I wanted to make sure phinq works with arrays containing many different types, not just objects
-			//lastly, i wanted to reduce the memory footprint as much as possible by making this an in-place thing 
 			for ($i = 0, $count = count($collection); $i < $count; $i++) {
 				$indexesToUnset = array();
 				for ($j = $i + 1; $j < $count; $j++) {
@@ -27,10 +26,9 @@
 						unset($collection[$index]);
 						$count--;
 					}
-					
+
 					$collection = array_values($collection); //need to reorder indexes after unset()
 				}
-
 			}
 
 			return $collection;
