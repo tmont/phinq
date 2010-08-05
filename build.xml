@@ -8,12 +8,23 @@
 	<target name="all" depends="lint, coverage, archive" description="Runs lint, coverage, docs and archive"/>
 	
 	<target name="archive" depends="set-product-revision" description="Creates gzipped archives for deployment">
-		<delete dir="${build.dist}"/>
 		<mkdir dir="${build.dist}"/>
-		
-		<!-- just library -->
-		<tar destfile="${build.dist}/${product.shortname}-${product.version}.${product.revision}.tar.gz"  compression="gzip"> 
-			<tarfileset dir="${dir.src}" includes="Phinq/**"/>
+		<delete>
+			<fileset dir="${build.dist}" includes="*.tar.gz"/>
+		</delete>
+
+		<property name="package.release" value="${product.shortname}-${product.version}.${product.revision}"/>
+		<property name="package.source" value="${product.shortname}-src-${product.version}.${product.revision}"/>
+
+		<!-- library -->
+		<tar destfile="${build.dist}/${package.release}.tar.gz" compression="gzip"> 
+			<tarfileset dir="${dir.src}" includes="Phinq/**" prefix="${package.release}"/>
+			<!--<tarfileset file="${build.dist}/phinq.phar" prefix="${package.release}/Phinq"/>-->
+		</tar>
+
+		<!-- source -->
+		<tar destfile="${build.dist}/${package.source}.tar.gz" compression="gzip">
+			<tarfileset dir="${basedir}" excludes=".idea/**,build/**,dist/**" prefix="${package.release}"/>
 		</tar>
 	</target>
 	
