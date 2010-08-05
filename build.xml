@@ -1,8 +1,11 @@
 <project name="Phinq" basedir="." default="help">
-	
+
+	<taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" classpath="tools/ant-googlecode-0.0.2.jar" name="gcupload"/>
+
 	<property file="./properties/build.properties" prefix="build"/>
 	<property file="./properties/product.properties" prefix="product"/>
 	<property file="./properties/dir.properties" prefix="dir"/>
+	<property file="./properties/gc.properties" prefix="gc"/>
 	<property environment="env"/>
 
 	<target name="all" depends="lint, coverage, archive" description="Runs lint, coverage, docs and archive"/>
@@ -102,22 +105,17 @@
 		</exec>
 	</target>
 	
-	<target name="meta" depends="init" description="Generates MetaInfo.php">
-		<exec executable="php" failonerror="true">
-			<arg line="${dir.tools}/metainfobuilder.php"/>
-			<arg line="--target"/>
-			<arg line="${dir.src}/Phinq/MetaInfo.php"/>
-			<arg line="--author"/>
-			<arg value="${product.author}"/>
-			<arg line="--name"/>
-			<arg value="${product.name}"/>
-			<arg line="--version"/>
-			<arg value="${product.version}"/>
-			<arg line="--website"/>
-			<arg value="${product.website}"/>
-		</exec>
-		
-		<echo level="info">Wrote to ${dir.src}/Phatality/MetaInfo.php</echo>
+	<target name="upload-to-googlecode" depends="archive" description="Uploads the archive release to google code">
+		<echo level="info">${package.release}</echo>
+		<gcupload
+			username="gc.username"
+			password="gc.password"
+			projectname="${product.shortname}"
+			filename="${build.dist}/${package.release}.tar.gz"
+			targetfilename="${package.release}.tar.gz"
+			summary="${product.name} - ${product.version}.${product.revision} (autouploaded from build.xml target)"
+			labels="Featured, Type-Package"
+		/>
 	</target>
 	
 	<!-- 
