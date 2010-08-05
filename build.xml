@@ -5,7 +5,6 @@
 	<property file="./properties/build.properties" prefix="build"/>
 	<property file="./properties/product.properties" prefix="product"/>
 	<property file="./properties/dir.properties" prefix="dir"/>
-	<property file="./properties/gc.properties" prefix="gc"/>
 	<property environment="env"/>
 
 	<target name="all" depends="lint, coverage, archive" description="Runs lint, coverage, docs and archive"/>
@@ -106,15 +105,24 @@
 	</target>
 	
 	<target name="upload-to-googlecode" depends="archive" description="Uploads the archive release to google code">
-		<echo level="info">${package.release}</echo>
 		<gcupload
-			username="${gc.username}"
-			password="${gc.password}"
+			username="${username}"
+			password="${password}"
 			projectname="${product.shortname}"
 			filename="${build.dist}/${package.release}.tar.gz"
 			targetfilename="${package.release}.tar.gz"
-			summary="${product.name} - ${product.version}.${product.revision} (autouploaded from build.xml target)"
-			labels="Featured, Type-Package"
+			summary="${product.name} ${product.version}.${product.revision} [RELEASE] (autouploaded from build.xml target)"
+			labels="Featured, Type-Archive"
+		/>
+
+		<gcupload
+			username="${username}"
+			password="${password}"
+			projectname="${product.shortname}"
+			filename="${build.dist}/${package.source}.tar.gz"
+			targetfilename="${package.source}.tar.gz"
+			summary="${product.name} ${product.version}.${product.revision} [SOURCE] (autouploaded from build.xml target)"
+			labels="Featured, Type-Source"
 		/>
 	</target>
 	
