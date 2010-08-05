@@ -2,12 +2,12 @@
 
 	namespace Phinq;
 
-	use Iterator, Closure, OutOfBoundsException, BadMethodCallException, InvalidArgumentException;
+	use IteratorAggregate, Closure, OutOfBoundsException, BadMethodCallException, InvalidArgumentException, ArrayIterator;
 
 	/**
 	 * A port of .NET's LINQ extension methods
 	 */
-	class Phinq implements Iterator {
+	class Phinq implements IteratorAggregate {
 
 		private $collection;
 		private $evaluatedCollection;
@@ -16,20 +16,20 @@
 		private $isDirty = false;
 
 		/**
-		 * @param array $collection The initial collection to query on
+		 * @param array|Phinq|Iterator|IteratorAggregate $collection The initial collection to query on
 		 */
-		public function __construct(array $collection) {
-			$this->collection = array_values($collection);
+		public function __construct($collection) {
+			$this->collection = Util::convertToNumericallyIndexedArray($collection);
 			$this->evaluatedCollection = $this->collection;
 		}
 
 		/**
 		 * Convenience factory method for method chaining
 		 *
-		 * @param array $collection The initial collection to query on
+		 * @param array|Phinq|Iterator|IteratorAggregate $collection The initial collection to query on
 		 * @return Phinq
 		 */
-		public final static function create(array $collection) {
+		public final static function create($collection) {
 			return new static($collection);
 		}
 
@@ -700,40 +700,8 @@
 			return $this;
 		}
 
-		/**
-		 * @ignore
-		 */
-		public function current() {
-			$collection = $this->toArray();
-			return $collection[$this->index];
-		}
-
-		/**
-		 * @ignore
-		 */
-		public function key() {
-			return $this->index;
-		}
-
-		/**
-		 * @ignore
-		 */
-		public function next() {
-			$this->index++;
-		}
-
-		/**
-		 * @ignore
-		 */
-		public function rewind() {
-			$this->index = 0;
-		}
-
-		/**
-		 * @ignore
-		 */
-		public function valid() {	
-			return array_key_exists($this->index, $this->toArray());
+		public function getIterator() {
+			return new ArrayIterator($this->toArray());
 		}
 	}
 

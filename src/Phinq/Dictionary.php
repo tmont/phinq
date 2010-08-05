@@ -5,7 +5,7 @@
 	use ArrayAccess, Iterator, Countable;
 
 	/**
-	 * Basically a dictionary that allows complex types (e.g. objects) as keys
+	 * Basically an array that allows complex types (e.g. objects) as keys
 	 */
 	class Dictionary implements ArrayAccess, Iterator, Countable {
 

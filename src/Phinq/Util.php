@@ -2,6 +2,8 @@
 
 	namespace Phinq;
 
+	use Traversable, InvalidArgumentException;
+
 	final class Util {
 
 		//@codeCoverageIgnoreStart
@@ -37,6 +39,22 @@
 				return $a === $b ? 0 : ($a < $b ? -1 : 1);
 			}
 			//@codeCoverageIgnoreEnd
+		}
+
+		public static function convertToNumericallyIndexedArray($collection) {
+			if (is_array($collection)) {
+				return array_values($collection);
+			} else if ($collection instanceof Phinq) {
+				return $collection->toArray();
+			} else if ($collection instanceof Traversable) {
+				$array = array();
+				foreach ($collection as $value) {
+					$array[] = $value;
+				}
+				return $array;
+			}
+
+			throw new InvalidArgumentException('Unable to convert value to an array');
 		}
 
 	}
