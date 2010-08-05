@@ -7,6 +7,26 @@
 
 	class CoreTests extends \PHPUnit_Framework_TestCase {
 
+		public function testToDictionary() {
+			$keys = array(
+				new stdClass(),
+				new stdClass(),
+				new stdClass()
+			);
+
+			$dictionary = Phinq::create(range(1, 3))->toDictionary(function($int) use ($keys) { return $keys[$int - 1]; });
+			self::assertEquals(3, count($dictionary));
+
+			self::assertTrue(isset($dictionary[$keys[0]]));
+			self::assertEquals(1, $dictionary[$keys[0]]);
+
+			self::assertTrue(isset($dictionary[$keys[1]]));
+			self::assertEquals(2, $dictionary[$keys[1]]);
+
+			self::assertTrue(isset($dictionary[$keys[2]]));
+			self::assertEquals(3, $dictionary[$keys[2]]);
+		}
+
 		public function testBasicFilter() {
 			$collection = array(1, 2, 3, 4, 5, 6);
 			$filteredCollection = Phinq::create($collection)

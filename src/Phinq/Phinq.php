@@ -67,6 +67,25 @@
 		}
 
 		/**
+		 * Returns the collection as an ArrayAccess-able object, with the
+		 * keys being chosen using the given $keySelector
+		 *
+		 * @param Closure $keySelector A lambda function that takes one argument, the current element, and
+		 *                             returns a key for the dictionary entry for the corresponding element
+		 * @return Dictionary
+		 */
+		public function toDictionary(Closure $keySelector) {
+			$collection = $this->toArray();
+
+			$dictionary = new Dictionary();
+			for ($i = 0, $count = count($collection); $i < $count; $i++) {
+				$dictionary[$keySelector($collection[$i])] = $collection[$i];
+			}
+
+			return $dictionary;
+		}
+
+		/**
 		 * Filters the collection using the given predicate
 		 *
 		 * The lambda expression takes one argument, the value of the current collection member,
