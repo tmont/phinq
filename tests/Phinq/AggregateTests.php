@@ -84,7 +84,7 @@
 
 			$collection = array($obj1, $obj2, $obj3);
 
-			self::assertSame($obj1, Phinq::create($collection)->max(function($value) { return $value->id; }));
+			self::assertSame($obj3, Phinq::create($collection)->max(function($value) { return $value->id; }));
 		}
 
 		public function testMin() {

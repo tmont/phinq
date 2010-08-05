@@ -4,34 +4,11 @@
 
 	use Closure;
 
-	class OrderByQuery extends LambdaDrivenQuery {
+	class OrderByQuery extends OrderedQuery {
 
-		private $descending;
-
-		public function __construct(Closure $lambda, $descending = false) {
-			parent::__construct($lambda);
-			$this->descending = (bool)$descending;
-		}
-
-		public function execute(array $collection) {
+		public function getSortingCallback() {
 			$lambda = $this->getLambdaExpression();
-
-			usort($collection, function($a, $b) use ($lambda) {
-				$resultA = $lambda($a);
-				$resultB = $lambda($b);
-
-				if ($resultA == $resultB) {
-					return 0;
-				}
-
-				return $resultA < $resultB ? -1 : 1;
-			});
-
-			if ($this->descending) {
-				$collection = array_reverse($collection);
-			}
-
-			return $collection;
+			return Util::getDefaultSortCallback($lambda, $this->isDescending());
 		}
 
 	}

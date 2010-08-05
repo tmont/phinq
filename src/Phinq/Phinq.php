@@ -18,9 +18,15 @@
 		/**
 		 * @param array|Phinq|Iterator|IteratorAggregate $collection The initial collection to query on
 		 */
-		public function __construct($collection) {
+		protected function __construct($collection, array $queries = array()) {
 			$this->collection = Util::convertToNumericallyIndexedArray($collection);
 			$this->evaluatedCollection = $this->collection;
+
+			if (!empty($queries)) {
+				foreach ($queries as $query) {
+					$this->addToQueue($query);
+				}
+			}
 		}
 
 		/**
@@ -31,6 +37,19 @@
 		 */
 		public final static function create($collection) {
 			return new static($collection);
+		}
+
+		/**
+		 * Since PHP doesn't support polymorphism, we have to manhandle a downcast
+		 *
+		 * @return Phinq
+		 */
+		private function getThisOrCastDown() {
+			if (get_class($this) !== __CLASS__) {
+				return new self($this->collection, $this->queryQueue);
+			}
+
+			return $this;
 		}
 
 		protected function getCollection(Closure $predicate = null) {
@@ -46,6 +65,10 @@
 		protected final function addToQueue(Query $query) {
 			$this->queryQueue[] = $query;
 			$this->isDirty = true;
+		}
+
+		protected final function getLastQuery() {
+			return empty($this->queryQueue) ? null : end($this->queryQueue);
 		}
 
 		/**
@@ -97,7 +120,7 @@
 		 */
 		public function where(Closure $predicate) {
 			$this->addToQueue(new WhereQuery($predicate));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -108,11 +131,11 @@
 		 *
 		 * @param Closure $lambda
 		 * @param bool $descending If true, the collection will be reversed
-		 * @return Phinq
+		 * @return OrderedPhinq
 		 */
 		public function orderBy(Closure $lambda, $descending = false) {
 			$this->addToQueue(new OrderByQuery($lambda, (bool)$descending));
-			return $this;
+			return new OrderedPhinq($this->collection, $this->queryQueue);
 		}
 
 		/**
@@ -126,7 +149,7 @@
 		 */
 		public function select(Closure $lambda) {
 			$this->addToQueue(new SelectQuery($lambda));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -138,7 +161,7 @@
 		 */
 		public function union(array $collectionToUnion, EqualityComparer $comparer = null) {
 			$this->addToQueue(new UnionQuery($collectionToUnion, $comparer));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -150,7 +173,7 @@
 		 */
 		public function intersect(array $collectionToIntersect, EqualityComparer $comparer = null) {
 			$this->addToQueue(new IntersectQuery($collectionToIntersect, $comparer));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -161,7 +184,7 @@
 		 */
 		public function concat(array $collectionToConcat) {
 			$this->addToQueue(new ConcatQuery($collectionToConcat));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -172,7 +195,7 @@
 		 */
 		public function distinct(EqualityComparer $comparer = null) {
 			$this->addToQueue(new DistinctQuery($comparer));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -183,7 +206,7 @@
 		 */
 		public function skip($amount) {
 			$this->addToQueue(new SkipQuery($amount));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -194,7 +217,7 @@
 		 */
 		public function skipWhile(Closure $predicate) {
 			$this->addToQueue(new SkipWhileQuery($predicate));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -205,7 +228,7 @@
 		 */
 		public function take($amount) {
 			$this->addToQueue(new TakeQuery($amount));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -216,7 +239,7 @@
 		 */
 		public function takeWhile(Closure $predicate) {
 			$this->addToQueue(new TakeWhileQuery($predicate));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -385,7 +408,7 @@
 		 */
 		public function groupBy(Closure $lambda) {
 			$this->addToQueue(new GroupByQuery($lambda));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -463,7 +486,7 @@
 		 */
 		public function reverse() {
 			$this->addToQueue(new ReverseQuery());
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -475,7 +498,7 @@
 		 */
 		public function max(Closure $lambda = null) {
 			$lambda = $lambda ?: function($value) { return $value; };
-			return static::create($this->toArray())->orderBy($lambda, true)->firstOrDefault();
+			return self::create($this->toArray())->orderBy($lambda, true)->firstOrDefault();
 		}
 
 		/**
@@ -487,7 +510,7 @@
 		 */
 		public function min(Closure $lambda = null) {
 			$lambda = $lambda ?: function($value) { return $value; };
-			return static::create($this->toArray())->orderBy($lambda)->firstOrDefault();
+			return self::create($this->toArray())->orderBy($lambda)->firstOrDefault();
 		}
 
 		/**
@@ -556,7 +579,7 @@
 		 */
 		public function except(array $collectionToExcept, EqualityComparer $comparer = null) {
 			$this->addToQueue(new ExceptQuery($collectionToExcept, $comparer));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -569,7 +592,7 @@
 		 */
 		public function selectMany(Closure $lambda) {
 			$this->addToQueue(new SelectManyQuery($lambda));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -610,7 +633,7 @@
 		 */
 		public function join(array $collectionToJoinOn, Closure $innerKeySelector, Closure $outerKeySelector, Closure $resultSelector, EqualityComparer $comparer = null) {
 			$this->addToQueue(new JoinQuery($collectionToJoinOn, $innerKeySelector, $outerKeySelector, $resultSelector, $comparer));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -627,7 +650,7 @@
 		 */
 		public function groupJoin(array $collectionToJoinOn, Closure $innerKeySelector, Closure $outerKeySelector, Closure $resultSelector, EqualityComparer $comparer = null) {
 			$this->addToQueue(new GroupJoinQuery($collectionToJoinOn, $innerKeySelector, $outerKeySelector, $resultSelector, $comparer));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -646,7 +669,7 @@
 		 */
 		public function cast($type) {
 			$this->addToQueue(new CastQuery($type));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -660,7 +683,7 @@
 		 */
 		public function ofType($type) {
 			$this->addToQueue(new OfTypeQuery($type));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -672,7 +695,7 @@
 		 */
 		public function defaultIfEmpty($defaultValue = null) {
 			$this->addToQueue(new DefaultIfEmptyQuery($defaultValue));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -684,7 +707,7 @@
 		 */
 		public function zip(array $collectionToMerge, Closure $resultSelector) {
 			$this->addToQueue(new ZipQuery($collectionToMerge, $resultSelector));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		/**
@@ -697,7 +720,7 @@
 		 */
 		public function walk(Closure $lambda) {
 			$this->addToQueue(new WalkQuery($lambda));
-			return $this;
+			return $this->getThisOrCastDown();
 		}
 
 		public function getIterator() {

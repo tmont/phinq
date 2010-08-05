@@ -63,6 +63,51 @@
 			self::assertSame(array(5, 3, 1), $orderedCollection);
 		}
 
+		public function testThenBy() {
+			$sphinqter1 = new Sphinqter(1, 1);
+			$sphinqter2 = new Sphinqter(1, 2);
+			$sphinqter3 = new Sphinqter(2, 1);
+			$sphinqter4 = new Sphinqter(2, 3);
+			$sphinqter5 = new Sphinqter(2, 5);
+			$sphinqter6 = new Sphinqter(3, 3);
+
+			$collection = array($sphinqter1, $sphinqter3, $sphinqter6, $sphinqter2, $sphinqter5, $sphinqter4);
+
+			$orderedCollection = Phinq::create($collection)
+				->orderBy(function($value) { return $value->id; })
+				->thenBy(function($value) { return $value->foo; })
+				->where(function($foo) { return $foo; })
+				->toArray();
+
+			self::assertSame(array($sphinqter1, $sphinqter2, $sphinqter3, $sphinqter4, $sphinqter5, $sphinqter6), $orderedCollection);
+		}
+
+		public function testThenByDescending() {
+			$sphinqter1 = new Sphinqter(1, 2);
+			$sphinqter2 = new Sphinqter(1, 1);
+			$sphinqter3 = new Sphinqter(2, 5);
+			$sphinqter4 = new Sphinqter(2, 3);
+			$sphinqter5 = new Sphinqter(2, 1);
+			$sphinqter6 = new Sphinqter(3, 3);
+
+			$collection = array($sphinqter1, $sphinqter3, $sphinqter6, $sphinqter2, $sphinqter5, $sphinqter4);
+
+			$orderedCollection = Phinq::create($collection)
+				->orderBy(function($value) { return $value->id; })
+				->thenBy(function($value) { return $value->foo; }, true)
+				->toArray();
+
+			self::assertSame(array($sphinqter1, $sphinqter2, $sphinqter3, $sphinqter4, $sphinqter5, $sphinqter6), $orderedCollection);
+		}
+
+		public function testCannotCallThenByIfLastQueryWasNotAnOrderedQuery() {
+			$phinq = Phinq::create(range(1, 6))
+				->orderBy(function($value) { return $value; })
+				->where(function($foo) { return $foo; });
+
+			self::assertEquals('Phinq\Phinq', get_class($phinq));
+		}
+
 		public function testUnion() {
 			$collection1 = array(1, 2, 3);
 			$collection2 = array(2, 3, 4);

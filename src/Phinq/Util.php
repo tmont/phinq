@@ -2,7 +2,7 @@
 
 	namespace Phinq;
 
-	use Traversable, InvalidArgumentException;
+	use Traversable, InvalidArgumentException, Closure;
 
 	final class Util {
 
@@ -55,6 +55,21 @@
 			}
 
 			throw new InvalidArgumentException('Unable to convert value to an array');
+		}
+
+		public static function getDefaultSortCallback(Closure $lambda, $descending) {
+			$direction = $descending ? -1 : 1;
+
+			return function($a, $b) use ($lambda, $direction) {
+				$resultA = $lambda($a);
+				$resultB = $lambda($b);
+
+				if ($resultA == $resultB) {
+					return 0;
+				}
+
+				return $resultA < $resultB ? 1 * -$direction : $direction;
+			};
 		}
 
 	}

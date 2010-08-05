@@ -204,7 +204,7 @@
 		}
 
 		public function testCreateFromPhinq() {
-			$phinq = new Phinq(array('foo', 'bar'));
+			$phinq = Phinq::create(array('foo', 'bar'));
 			$collection = Phinq::create($phinq)->toArray();
 
 			self::assertSame(array('foo', 'bar'), $collection);
