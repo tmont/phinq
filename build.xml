@@ -108,8 +108,8 @@
 	<target name="upload-to-googlecode" depends="archive" description="Uploads the archive release to google code">
 		<echo level="info">${package.release}</echo>
 		<gcupload
-			username="gc.username"
-			password="gc.password"
+			username="${gc.username}"
+			password="${gc.password}"
 			projectname="${product.shortname}"
 			filename="${build.dist}/${package.release}.tar.gz"
 			targetfilename="${package.release}.tar.gz"
