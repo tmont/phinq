@@ -17,7 +17,7 @@
 
 			$groupings = array();
 			foreach ($dictionary as $grouping) {
-				$groupings[] = new Grouping($grouping['values'], $grouping['key']);
+				$groupings[] = new Grouping($grouping['value'], $grouping['key']);
 			}
 
 			return $groupings;
