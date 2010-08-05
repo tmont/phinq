@@ -10,6 +10,9 @@
 		private function __construct() {}
 		//@codeCoverageIgnoreEnd
 
+		/**
+		 * What the hell does this do?
+		 */
 		public static function nonRecursiveFlatten(array $array) {
 			$flattened = array();
 			foreach ($array as $value) {
