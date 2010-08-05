@@ -2,12 +2,12 @@
 
 	namespace Phinq\Tests;
 
-	use Phinq\ComplexKeyDictionary;
+	use Phinq\GroupingDictionary;
 
-	class ComplexKeyDictionaryTest extends \PHPUnit_Framework_TestCase {
+	class GroupingDictionaryTest extends \PHPUnit_Framework_TestCase {
 
 		public function testArrayAccess() {
-			$dictionary = new ComplexKeyDictionary();
+			$dictionary = new GroupingDictionary();
 			$key = new Sphinqter('foo');
 			$dictionary[$key] = 'foo';
 			$dictionary[$key] = 'bar';
@@ -21,7 +21,7 @@
 		}
 
 		public function testIteratability() {
-			$dictionary = new ComplexKeyDictionary();
+			$dictionary = new GroupingDictionary();
 			$dictionary['foo'] = 'bar';
 			$dictionary['foo'] = 'baz';
 

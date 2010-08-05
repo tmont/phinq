@@ -8,7 +8,7 @@
 
 		public function execute(array $collection) {
 			$lambda = $this->getLambdaExpression();
-			$dictionary = new ComplexKeyDictionary();
+			$dictionary = new GroupingDictionary();
 
 			//lambda expression is abstracted so that the original collection can't be modified since it's passed by reference to array_walk() 
 			array_walk($collection, function($value, $key) use (&$dictionary, $lambda) {

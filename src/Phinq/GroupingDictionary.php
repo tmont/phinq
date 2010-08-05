@@ -7,7 +7,7 @@
 	/**
 	 * Basically a dictionary that allows complex types (e.g. objects) as keys
 	 */
-	class ComplexKeyDictionary implements ArrayAccess, Iterator, Countable {
+	class GroupingDictionary implements ArrayAccess, Iterator, Countable {
 
 		private $data = array();
 		private $index = 0;

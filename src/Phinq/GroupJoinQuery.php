@@ -26,7 +26,7 @@
 			$comparer         = $this->getComparer();
 			$outerCount       = count($this->collectionToJoinOn);
 			$outerCollection  = $this->collectionToJoinOn;
-			$dictionary       = new ComplexKeyDictionary();
+			$dictionary       = new GroupingDictionary();
 
 			array_walk(
 				$collection,
