@@ -1,84 +1,34 @@
-# phinq
-LINQ for PHP
+# phinq - LINQ for PHP
 
-originally written by Tommy Montgomery
+This project was originally created Tommy Montgomery in 2010 and was a faithful port of .NET's LINQ library (circa 4.0). It was ported over to Github from Google Code and is now under active development to bring additional capabilites into the project.
 
-*phinq* is a faithful port of .NET's LINQ library (circa 4.0) to PHP.
+## Current Development ##
+
+Currently the code provides a strong LINQ to Objects impelementation but isn't structured to handle other adapters such as an XML or database provider.
+
+- Refactor existing code to be **Phinq to Objects** and allow for additional query adapters.
+- Implement **Phinq to XML**.
+- Implement **Phinq to SQL**.
+
 
 ## Requirements
 
 * PHP 5.3 or higher
+* A PSR-0 compliant autoloader.
 
-## LINQ methods implemented:
+## Please Read
 
-* `Aggregate()`
-* `All()`
-* `Any()`
-* `Average()`
-* `Cast()`
-* `Concat()`
-* `Contains()`
-* `Count()`
-* `DefaultIfEmpty()`
-* `Distinct()`
-* `ElementAt()`
-* `ElementAtOrDefault()`
-* `Except()`
-* `First()`
-* `FirstOrDefault()`
-* `GroupBy()`
-* `GroupJoin()`
-* `Intersect()`
-* `Join()`
-* `Last()`
-* `LastOrDefault()`
-* `Max()`
-* `Min()`
-* `OfType()`
-* `OrderBy()`
-* `Reverse()`
-* `Select()`
-* `SelectMany()`
-* `SequenceEqual()`
-* `Single()`
-* `SingleOrDefault()`
-* `Skip()`
-* `SkipWhile()`
-* `Sum()`
-* `Take()`
-* `TakeWhile()`
-* `ThenBy()`
-* `ToArray()`
-* `ToDictionary()`
-* `Union()`
-* `Where()`
-* `Zip()` 
+The original version of Phinq shipped with its own autoloader for classes and tests. This has been removed in favor of being more "framework friendly" and so can slot easily into any framework that implements a PSR-0 compliant autoloader.
 
-Extra methods:
+If you are not using a framework you will still need to use an autoloader since Phinq class files do not explicitly load one another.
 
-* `walk()` 
-
-LINQ methods to be implemented: None.
-
-LINQ methods not implemented:
-
-* `AsEnumerable()`
-* `AsParallel()`
-* `AsQueryable()`
-* `LongCount()`
-* `OrderByDescending()` - implemented as an optional argument to orderBy()
-* `ThenByDescending()` - implemented as an optional argument to thenBy()
-* `ToList()`
-* `ToLookup()` 
 
 ## Examples
 
 ### Basic Usage
 ```php
-//bootstrap the library, it of course uses autoload because it's not 1998 anymore
-require_once 'Phinq/bootstrap.php';
 
-//fully qualifying things sucks
+//Import the Phinq namespace and main class
 use Phinq\Phinq;
 
 //suppose you have some sort of collection
@@ -213,3 +163,66 @@ people
     );
   });
 ```
+
+## LINQ methods implemented:
+
+* `Aggregate()`
+* `All()`
+* `Any()`
+* `Average()`
+* `Cast()`
+* `Concat()`
+* `Contains()`
+* `Count()`
+* `DefaultIfEmpty()`
+* `Distinct()`
+* `ElementAt()`
+* `ElementAtOrDefault()`
+* `Except()`
+* `First()`
+* `FirstOrDefault()`
+* `GroupBy()`
+* `GroupJoin()`
+* `Intersect()`
+* `Join()`
+* `Last()`
+* `LastOrDefault()`
+* `Max()`
+* `Min()`
+* `OfType()`
+* `OrderBy()`
+* `Reverse()`
+* `Select()`
+* `SelectMany()`
+* `SequenceEqual()`
+* `Single()`
+* `SingleOrDefault()`
+* `Skip()`
+* `SkipWhile()`
+* `Sum()`
+* `Take()`
+* `TakeWhile()`
+* `ThenBy()`
+* `ToArray()`
+* `ToDictionary()`
+* `Union()`
+* `Where()`
+* `Zip()` 
+
+Extra methods:
+
+* `walk()` 
+
+LINQ methods to be implemented: None.
+
+LINQ methods not implemented:
+
+* `AsEnumerable()`
+* `AsParallel()`
+* `AsQueryable()`
+* `LongCount()`
+* `OrderByDescending()` - implemented as an optional argument to orderBy()
+* `ThenByDescending()` - implemented as an optional argument to thenBy()
+* `ToList()`
+* `ToLookup()` 
+
