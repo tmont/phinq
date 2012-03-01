@@ -1,1 +1,6 @@
-build
+.buildpath
+.project
+.settings
+runner.php
+phpunit.xml
+

@@ -1,20 +1,32 @@
 <?php
 
-	namespace Phinq;
+namespace Phinq;
 
-	class Grouping extends Phinq {
+class Grouping extends Phinq
+{
+	/**
+	 * 
+	 * @var unknown_type
+	 */
+	protected $key;
 
-		private $key;
-
-		public function __construct(array $collection, $key) {
-			parent::__construct($collection);
-			$this->key = $key;
-		}
-
-		public final function getKey() {
-			return $this->key;
-		}
-
+	/**
+	 * 
+	 * @param array $collection
+	 * @param unknown_type $key
+	 */
+	public function __construct(array $collection, $key)
+	{
+		parent::__construct($collection);
+		$this->key = $key;
 	}
-	
-?>
+
+	/**
+	 * @return unknown_type
+	 */
+	public final function getKey()
+	{
+		return $this->key;
+	}
+
+}

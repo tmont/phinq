@@ -1,18 +1,18 @@
 <?php
 
-	namespace Phinq;
+namespace Phinq;
 
-	class DefaultIfEmptyQuery implements Query {
+class DefaultIfEmptyQuery implements Query
+{
+	protected $defaultValue;
 
-		private $defaultValue;
-
-		public function __construct($defaultValue = null) {
-			$this->defaultValue = $defaultValue;
-		}
-
-		public function execute(array $collection) {
-			return empty($collection) ? array($this->defaultValue) : $collection;
-		}
+	public function __construct($defaultValue = null)
+	{
+		$this->defaultValue = $defaultValue;
 	}
 
-?>
+	public function execute(array $collection)
+	{
+		return empty($collection) ? array($this->defaultValue) : $collection;
+	}
+}

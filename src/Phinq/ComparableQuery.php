@@ -1,19 +1,33 @@
 <?php
 
-	namespace Phinq;
+namespace Phinq;
 
-	abstract class ComparableQuery implements Query, Comparer {
+/**
+ * 
+ */
+abstract class ComparableQuery implements Query, Comparer
+{
+	/**
+	 * 
+	 * @var EqualityComparer
+	 */
+	protected $comparer;
 
-		private $comparer;
-
-		public function __construct(EqualityComparer $comparer = null) {
-			$this->comparer = $comparer ?: DefaultEqualityComparer::getInstance();
-		}
-
-		public final function getComparer() {
-			return $this->comparer;
-		}
-
+	/**
+	 * Construct a new instance of this object.
+	 * @param EqualityComparer $comparer
+	 */
+	public function __construct(EqualityComparer $comparer = null)
+	{
+		$this->comparer = $comparer ?: DefaultEqualityComparer::getInstance();
 	}
 	
-?>
+	/**
+	 * (non-PHPdoc)
+	 * @see Phinq.Comparer::getComparer()
+	 */
+	public final function getComparer()
+	{
+		return $this->comparer;
+	}
+}

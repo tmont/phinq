@@ -1,9 +1,8 @@
 <?php
 
-	namespace Phinq;
+namespace Phinq;
 
-	interface EqualityComparer {
-		function equals($a, $b);
-	}
-	
-?>
+interface EqualityComparer
+{
+	function equals($a, $b);
+}

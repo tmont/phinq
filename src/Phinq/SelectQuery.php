@@ -1,20 +1,18 @@
 <?php
 
-	namespace Phinq;
+namespace Phinq;
 
-	class SelectQuery extends LambdaDrivenQuery {
+class SelectQuery extends LambdaDrivenQuery
+{
+	public function execute(array $collection)
+	{
+		$newCollection = array();
+		$lambda = $this->getLambdaExpression();
 
-		public function execute(array $collection) {
-			$newCollection = array();
-			$lambda = $this->getLambdaExpression();
+		array_walk($collection, function($value, $key) use (&$newCollection, $lambda) {
+			$newCollection[] = $lambda($value);
+		});
 
-			array_walk($collection, function($value, $key) use (&$newCollection, $lambda) {
-				$newCollection[] = $lambda($value);
-			});
-
-			return $newCollection;
-		}
-		
+		return $newCollection;
 	}
-	
-?>
+}

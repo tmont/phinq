@@ -1,21 +1,23 @@
 <?php
 
-	namespace Phinq;
+namespace Phinq;
 
-	use Closure;
+use Closure;
 
-	abstract class LambdaDrivenQuery implements Query, LambdaDriven {
+/**
+ * 
+ */
+abstract class LambdaDrivenQuery implements Query, LambdaDriven
+{
+	protected $lambda;
 
-		private $lambda;
-
-		public function __construct(Closure $lambda) {
-			$this->lambda = $lambda;
-		}
-
-		public final function getLambdaExpression() {
-			return $this->lambda;
-		}
-
+	public function __construct(Closure $lambda)
+	{
+		$this->lambda = $lambda;
 	}
-	
-?>
+
+	public final function getLambdaExpression()
+	{
+		return $this->lambda;
+	}
+}

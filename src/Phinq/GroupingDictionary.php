@@ -1,19 +1,21 @@
 <?php
 
-	namespace Phinq;
+namespace Phinq;
 
+/**
+ * Dictionary used for grouping sets of objects
+ *
+ * Basically, the values are automatically implemented as arrays.
+ */
+class GroupingDictionary extends Dictionary
+{
 	/**
-	 * Dictionary used for grouping sets of objects
-	 *
-	 * Basically, the values are automatically implemented as arrays.
+	 * (non-PHPdoc)
+	 * @see Phinq.Dictionary::createValue()
 	 */
-	class GroupingDictionary extends Dictionary {
-
-		protected function createValue($oldValue, $newValue) {
-			$oldValue[] = $newValue;
-			return $oldValue;
-		}
-
+	protected function createValue($oldValue, $newValue)
+	{
+		$oldValue[] = $newValue;
+		return $oldValue;
 	}
-	
-?>
+}
